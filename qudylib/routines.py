@@ -61,7 +61,7 @@ def norm(A):
        
     **Returns:**
     
-       * nrm : norm, defined as :math:`\sqrt{ \langle A, A \rangle }`.
+       * nrm : norm, defined as :math:`\\sqrt{ \\langle A, A \\rangle }`.
     """
     nrm = sqrt( inner_product(A,A) )
     return nrm
@@ -94,15 +94,11 @@ def trace_distance(A, B):
 def fidelity(A, B):
     """
     Calculates the fidelity between two unitaries.  The fidelity is
-    defined as 
-    
-    .. math::
-       
-       F = min_\psi \sqrt{\langle \psi | A^\dagger B |\psi\rangle \langle \psi | B^\dagger A | \psi \rangle }.
+    defined as :math:`F = \\min_{\\psi} \\sqrt{ \\langle \\psi | A^\\dagger B |\\psi \\rangle \\langle \\psi | B^\\dagger A | \\psi \\rangle }`.
        
     **Forms:**
     
-       * `fidelity( A, B )`
+       * ``fidelity( A, B )``
        
     **Args:**
     
@@ -292,7 +288,7 @@ def euler_decomposition( U ):
     
        * `[alpha,beta,gamma]` : Euler angles for the decomposition.
          The original input matrix may be reconstructed by :math:`U =
-         R_x(\gamma) R_y(\beta) R_x(\alpha)`.
+         R_x(\\gamma) R_y(\\beta) R_x(\\alpha)`.
          
     .. todo::
        
