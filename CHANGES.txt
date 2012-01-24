@@ -1,0 +1,4 @@
+v0.0, 2012 January 12 -- Started project 
+v0.0, 2012 January 21 -- Documentation and installer scripts are now working.  
+					 				 			 Several basic modules are now running well, i.e. 
+												 control class and integration routines.

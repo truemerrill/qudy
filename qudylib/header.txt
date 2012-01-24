@@ -1,0 +1,12 @@
+# QUDY
+# CONTROL SPECIFICATION FORMAT
+#
+# FILENAME : 'example.csv'
+# DATE : 2012/1/20
+#
+# This file specifies a set of control functions for a quantum control
+# system.  Each column (excluding the final column) corresponds to a
+# single control function sampled over a discrete set of time values.
+# The final column represents a discrete set of time values that the
+# control functions are sampled over.
+#
