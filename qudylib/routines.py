@@ -53,7 +53,7 @@ def norm(A):
     
     **Forms:**
     
-       ``norm(A)``
+       * ``norm(A)``
        
     **Args:**
     

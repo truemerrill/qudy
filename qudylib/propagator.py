@@ -37,6 +37,48 @@ class propagator:
     dimensionality of the control system is n(n+1), then we assume the
     dynamical Lie algebra is SU(2^n) and use a product-operator basis
     for the
+    
+    **Forms:**
+    
+       * `propagator(ctrl, hamiltonians)`
+       * `propagator(ctrl, hamiltonians, solution = 'method')`
+       * `propagator(ctrl, hamiltonians, solution = 'method', order = n)`
+    
+    **Args:**
+      
+       * *ctrl* : An instance of the control class.  Contains time
+          information as well as k-many control functions.
+       * *hamiltonians* :  A list or array of k-many Hamiltonians.  
+          The Hamiltonians must be square matrices of the same 
+          dimensionality.  It is recommended to use the operator 
+          class.
+    
+    **Optional keywords:**
+    
+       * solution = 'method' : Method used to numerically solve the 
+         conrol problem.  'method' may be one of the following strings.
+         
+            1. 'trotter' : Trotter method, using each time interval as
+               a time slice.
+            2. 'dyson' : Dyson series.
+            3. 'magnus' : Magnus expansion.
+            4. 'lindblad' : Lindblad master equation.
+            
+       * order = n : Integer valued order of pertubaton theory.  Used in 
+         the Dyson and Magnus methods
+       * integration_method = 'method' : Integration technique used in 
+         the Dyson and Magnus methods. 'method' may be one of the following
+         stings.
+                            
+            1. 'trapz' :    trapezoidal rule
+            2. 'cumtrapz' : cumulative trapezoidal
+            3. 'romb' :     Romberg integration
+            4. 'simps' :    Simpson's rule
+            
+    **Returns:**
+    
+       * :math:`U`, matrix solution to the control equation 
+         :math:`\dot{U}(t) = \sum_\mu u_\mu(t) H_\mu U(t)`.
     """
     def __init__(self, *args, **keyword_args):
         
@@ -131,6 +173,31 @@ class propagator:
         else:
             # set default solution method
             self.solution_method = 'trotter'
+            
+        # Set order of pertubation theory
+        default_order = 4
+        if keyword_args.has_key( 'order' ):
+            
+            order = keword_args['order']
+            
+            try:
+                if (order % 1.0) == 0:
+                    self.order = order
+            
+                else:
+                    # Order was not an integer, revert to defaults
+                    warn('Pertubation theory order must be integer valued.')
+                    self.order = default_order
+                    
+            except TypeError:
+                # Order was not numeric, revert to defaults
+                warn('Pertubation theory order must be integer valued.')
+                self.order = default_order
+                
+        else:
+            # Set default order
+            self.order = default_order
+            
                        
     
     def __repr__(self):
@@ -190,7 +257,30 @@ class propagator:
         return propagator( control(ARR) , self.hamiltonains )
     
     
-    def solve(self, method = 'trotter')
+    def solve(self, method = 'trotter'):
+        """
+        
+        """
+        
+        if method == 'trotter':
+            U = trotter( self.control, self.hamiltonians )
+            
+        elif method == 'dyson':
+            U = dyson( self.control, self.hamiltonains, \
+                       self.order )
+            
+        elif method == 'magnus':
+            U = magnus( self.control, self.hamiltonains, \
+                        self.order )
+            
+        elif method == 'lindblad':
+            U = lindblad( self.control, self.hamiltonians, \
+                          self.lindblad )
+            
+        else:
+            raise ValueError('Method %s was not understood.' %method)
+        
+        return U
 
 
 
