@@ -1,0 +1,45 @@
+Packaging
+=========
+
+This file contains packaging instructions intended for developers not
+familiar with the python distutils packaging utility.  This document
+is intended to be a set of cursory notes, and not a complete
+discussion of packaging standards.  For complete information, readers
+are referred to the `distutils manual
+<http://docs.python.org/distutils/index.html#distutils-index>`_.
+
+Versioning 
+---------- 
+
+Package versions are set using the qudylib.version and qudylib.release
+constants set in the main repository __init__.py file.  When preparing
+a new version for release, update these constants to the appropriate
+values.  The documentation and packaging scripts automatically update
+to the value set in the qudylib module.
+
+Documentation
+-------------
+
+The documentation system requires the sphinx documentation system.
+Assuming the developer has properly installed the sphinx package on
+their system, the documentation may be built using the makefile in the
+`docs/` directory.
+
+.. code-block:: sh
+
+   cd docs
+   make clean
+   make html
+   make latex
+
+
+Source packages
+---------------
+
+``python setup.py sdist``
+
+
+Binary packages
+---------------
+
+``python setup.py``

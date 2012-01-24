@@ -1,0 +1,29 @@
+Notes about the GIT version control system
+==========================================
+
+* Clone (check out) a repository.  This repository is currently held
+	at http://merrill.homenet.org/~true/git/qudy.git.
+  
+	``git clone http://merrill.homenet.org/~true/git/qudy.git``
+
+* Add changes to the repository.  Even if the file is already stored
+  on the repository, when a file is modified, it has to be explicitly
+  added before each commit.
+	
+	``git add file``
+	
+* Commit changes to the repository
+	
+	``git commit``
+
+	Optionally, git can recognize what files have been modified and
+	automatically commit these changes as well.  This is the default
+	behavior in subversion, cvs, etc.
+	
+	``git commit -a``
+
+* Update your working copy to the most recent version (merge with the
+  HEAD branch).  In git, updating is performed with the pull command.
+	
+	``git pull``
+	``git pull http://merrill.homenet.org/~true/git/qudy.git``
