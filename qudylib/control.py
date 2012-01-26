@@ -141,6 +141,7 @@ class control:
         # remaining columns as control functions.
         else:
             
+            arg = args[0]
             try:
                 ARR = arg.__array__()
                 number_controls = ARR.shape[1] - 1
@@ -151,7 +152,7 @@ class control:
                 self.timemin = min( self.times )
                 
                 # Assign remaining controls.
-                self.control = ARR[: , 0:(number_controls - 1)]
+                self.control = ARR[: , 0:(number_controls)]
                 self.number_controls = number_controls
                 self.dimension = number_controls
             
@@ -214,8 +215,10 @@ class control:
     
     
     def __call__(self, *args ):
-        """Returns the value of the control functions as a specific
-        instance of time.  Interpolation is used."""
+        """
+        Returns the value of the control functions as a specific
+        instance of time.  Interpolation is used.
+        """
         
         if len(args) == 1:
             # Only a time was specified, return control vector.
@@ -228,7 +231,14 @@ class control:
             t = args[ 1 ]
             return self.interpolate( t )[ index ]
         
-    
+        
+    def __len__(self):
+        """
+        length of the control.  Returns self.number_controls
+        """
+        return self.number_controls
+        
+        
     def interpolate( self, time, interpolation = None ):
         """
         function to interpolate controls.

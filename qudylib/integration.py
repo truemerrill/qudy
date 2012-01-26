@@ -67,34 +67,31 @@ def integrate( ctrl, hamiltonians, method = 'trapz' ):
     # integration is linear, we may integrate each control function
     # independently and perform the nessisary summation at the end.
     intgrl = zeros( [ctrl.number_controls , 1] )
+    t = ctrl.times.flatten()
     
     if method == 'trapz':
         
-        t = ctrl.times.flatten()
         for index in range( ctrl.number_controls ):
             y = ctrl.control[:,index].flatten()
-            intgl[index] = trapz(y,t)
+            intgrl[index] = trapz(y,t)
             
     elif method == 'cumtrapz':
         
-        t = ctrl.times.flatten()
         for index in range( ctrl.number_controls ):
             y = ctrl.control[:,index].flatten()
-            intgl[index] = cumtrapz(y,t)
+            intgrl[index] = cumtrapz(y,t)
         
     elif method == 'romb':
         
-        t = ctrl.times.flatten()
         for index in range( ctrl.number_controls ):
             y = ctrl.control[:,index].flatten()
-            intgl[index] = romb(y,t)
+            intgrl[index] = romb(y,t)
         
     elif method == 'simps':
         
-        t = ctrl.times.flatten()
         for index in range( ctrl.number_controls ):
             y = ctrl.control[:,index].flatten()
-            intgl[index] = simps(y,t)
+            intgrl[index] = simps(y,t)
             
     else:
         raise ValueError('Method %s not understood.' %(method))
@@ -102,7 +99,7 @@ def integrate( ctrl, hamiltonians, method = 'trapz' ):
     # Multiply the Hamiltonians by the required integrals
     A = 0 * hamiltonians[0]
     for index in range( ctrl.number_controls ):
-        A = A + intgrl[index] * hamiltonians[index]
+        A = A + float(intgrl[index]) * hamiltonians[index]
         
     # Return the integrated matrix
     return A
@@ -141,6 +138,7 @@ def trotter( ctrl, hamiltonians ):
         
         # Calculate pulse duration
         dt = ctrl.times[ timestep + 1 ] - ctrl.times[ timestep ]
+        dt = float(dt)
         
         # Construct Hamiltonian over this interval
         c = ctrl.control[timestep,:]
@@ -152,7 +150,7 @@ def trotter( ctrl, hamiltonians ):
         Ut = operator( expm( -1j * H * dt ) )
         
         # Append evolution
-        U = Ut * U
+        U = operator( Ut * U )
         
     # Return propagator
     return U

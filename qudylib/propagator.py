@@ -20,6 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from quantop import *
+from control import *
 from integration import *
 from routines import *
 
@@ -34,7 +35,7 @@ class propagator:
     x N matrices, where N is the dimensionality of the Hilbert space.
     If no Lindblad channels are specified, then the evolution is
     assumed to be unitary.  If no Hamiltonians are specified and the
-    dimensionality of the control system is n(n+1), then we assume the
+    dimensionality of the control system is n(n-1), then we assume the
     dynamical Lie algebra is SU(2^n) and use a product-operator basis
     for the
     
@@ -84,73 +85,38 @@ class propagator:
         
         # If there is one argument, then the user only gave a control
         # function.  Assume a qubit system, i.e. SU(2^n).
-        if len( args ) ==  1:
-            ctrl = args[0]
-            
-            try:
-                dim = ctrl.dimension
-                # Invert Lie dimensionality to get number qubits
-                n = log( dim + 1 ) / log( 4 )
-                H = product_operator( n )
+        if len(args) == 1:
+            self.control = args[0]
+            dim = self.control.number_controls
                 
-            except AttributeError:
-                raise TypeError('ctrl must be a member of the control class.')
-            
-            self.Lie_algebra = 'su(' + str(2**n) + ')'
+            # Convert Lie dimensonality into number of qubits.
+            n = log( dim + 1 ) / log( 4 )
+            self.hamiltonians = product_operator( n )
             self.number_qubits = n
+            self.lie_algebra = "su(" + str(n) + ")"
             
-        # If there are two arguments, then the user gave both a
-        # control function and also a set of Hamiltonians.
-        elif len( args ) == 2:
-            ctrl = args[0]
-            H = args[1]
+        # If there are two arguments, then the user gave both a set of
+        # controls and also a set of Hamiltonians.
+        elif len(args) == 2:
+            self.control = args[0]
+            self.hamiltonians = args[1]
             
-            try:
-                dim = ctrl.dimension
-                dimH = len(H)
-                
-            except AttributeError:
-                raise TypeError('ctrl must be a member of the control class.')
+        # If there are three arguments, then the user gave controls,
+        # Hamiltonians and Lindblad operators.
+        elif len(args) == 3:
+            self.control = args[0]
+            self.hamiltonians = args[1]
+            self.lindblad = args[2]
             
-            # Check that ctrl and H have the same dimension
-            if not len(ctrl) == len(H):
-                raise ValueError('Dimension of ctrl %i and dimension of ' + \
-                      'hamiltonians %i do not match.' %(int(dim),int(dimH)))
-        
-        # If there are three arguments, then the user gave a control
-        # function, Hamiltonians and also a set of Lindblad operators.
-        elif len( args ) == 3:
-            ctrl = args[0]
-            H = args[1]
-            L = args[2]
+        if not len( self.control ) == len( self.hamiltonians ):
+            raise ValueError("Control dimension mismatch.  Controls and " + \
+                             "Hamiltonians must be of the same length.")
             
-            try:
-                dim = ctrl.dimension
-                dimH = len(H)
-                
-            except AttributeError:
-                raise TypeError('ctrl must be a member of the control class.')
-            
-            # Check that ctrl and H have the same dimension
-            if not len(ctrl) == len(H):
-                raise ValueError('Dimension of ctrl %i and dimension of ' + \
-                      'hamiltonians %i do not match.' %(int(dim),int(dimH)))
-            
-            # Add in Lindblad operators and force solution method to
-            # be Lindblad.
-            self.lindblad = L
-            
-           
-        # Did not understand inputs, too many!
-        else:
-            raise SyntaxError('Too many inputs.')
-        
-        self.control = ctrl
-        self.hamiltonians = H
-        self.dimension = self.control.dimension
-        self.number_controls = self.control.number_controls
-        self.timemin = self.control.timemin
-        self.timemax = self.control.timemax
+        # Carry over several constants from controls
+        self.dimension  =  self.control.dimension
+        self.times      =  self.control.times
+        self.timemin    =  self.control.timemin
+        self.timemax    =  self.control.timemax
         
         # Parse through keyword arguments.  Sets default solution
         # method.  Other keywords that are not understood will be
@@ -168,7 +134,7 @@ class propagator:
                 # defined.
                 
                 # Return to default and warn user
-                self.solution_method = 't=[rotter'
+                self.solution_method = 'trotter'
                 warn('Solution method not understood, defaulting to \'trotter\'.')
         else:
             # set default solution method
@@ -178,7 +144,7 @@ class propagator:
         default_order = 4
         if keyword_args.has_key( 'order' ):
             
-            order = keword_args['order']
+            order = keyword_args['order']
             
             try:
                 if (order % 1.0) == 0:
@@ -199,7 +165,6 @@ class propagator:
             self.order = default_order
             
                        
-    
     def __repr__(self):
         """
         Function to display propagator objects when called on the
@@ -207,7 +172,7 @@ class propagator:
         """
         string = str( self.dimension ) + '-D propagator on t = ( ' + \
                  str( self.timemin ) + ' , ' + str( self.timemax ) + ' )'
-        return propagator( )
+        return string
 
 
     def __mul__(self, target):
@@ -223,12 +188,12 @@ class propagator:
             return h1 == h2
         
         try:
-            if H_check( self.hamiltonains , target.hamiltonians ):
+            if H_check( self.hamiltonians , target.hamiltonians ):
                 
-                # Hamiltonains match, append controls together
-                ctrl1 = target.control
-                ctrl2 = self.control
-                ctrl = vstack( ctrl1, ctrl2 )
+                # Hamiltonians match, append controls together
+                ctrl1 = target.control.control
+                ctrl2 = self.control.control
+                ctrl = vstack( (ctrl1, ctrl2) )
                 
                 # Adjust time vectors.  The second control should
                 # start just as the first one finishes.
@@ -241,10 +206,10 @@ class propagator:
                 dt_min = 1E-10 * target.timemax
                 
                 t2 = (t2 - self.timemin) + target.timemax + dt_min
-                t = vstack( t1, t2 )
+                t = vstack( (t1, t2) )
                 
                 # Stack control and time vectors.
-                ARR = hstack( ctrl, t )
+                ARR = hstack( (ctrl, t) )
                 
             else:
                 raise ValueError('Hamiltonians do not match. ' +\
@@ -254,7 +219,7 @@ class propagator:
             raise TypeError('Multiplication is only defined between ' +\
                       'propagator objects.')
         
-        return propagator( control(ARR) , self.hamiltonains )
+        return propagator( control(ARR) , self.hamiltonians )
     
     
     def solve(self, method = 'trotter'):
@@ -266,11 +231,11 @@ class propagator:
             U = trotter( self.control, self.hamiltonians )
             
         elif method == 'dyson':
-            U = dyson( self.control, self.hamiltonains, \
+            U = dyson( self.control, self.hamiltonians, \
                        self.order )
             
         elif method == 'magnus':
-            U = magnus( self.control, self.hamiltonains, \
+            U = magnus( self.control, self.hamiltonians, \
                         self.order )
             
         elif method == 'lindblad':
@@ -281,6 +246,3 @@ class propagator:
             raise ValueError('Method %s was not understood.' %method)
         
         return U
-
-
-
