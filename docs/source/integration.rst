@@ -1,6 +1,6 @@
 Integration
 ===========
 
-.. automodule:: integration
+.. automodule:: qudylib.integration
    :members:
    :undoc-members:

@@ -1,6 +1,6 @@
 Quantum operators
 =================
 
-.. automodule:: quantop
+.. automodule:: qudylib.quantop
    :members:
    :undoc-members:

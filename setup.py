@@ -8,7 +8,7 @@ def check_dir( target ):
     # function makes it easy to automatically package scripts and
     # input files in the binary distribution.
     
-        # Save current path
+    # Save current path
     root = os.getcwd()
     
     # Change path to target

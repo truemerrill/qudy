@@ -5,8 +5,24 @@
 # 
 
 
-
-
+if not __name__ == '__main__':
+    
+    # qudy is not the main program.  It therefore is being loaded as a
+    # python module.  Act as a wrapper for qudylib.
+    
+    try:
+        from qudylib import *
+        
+    except ImportError:
+        raise ImportError('Unable to find qudylib, installation is broken!')
+    
+else:
+    
+    # qudy is being executed as the main program, i.e. the user has
+    # called from the commandline ">> qudy input_file.inp" where the
+    # file "input_file.inp" sets the job being executed.
+    
+    return NotImplemented
 
 
 

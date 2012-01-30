@@ -1,6 +1,6 @@
 Miscellaneous routines
 ======================
 
-.. automodule:: routines
+.. automodule:: qudylib.routines
    :members:
    :undoc-members:
