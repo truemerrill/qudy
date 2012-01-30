@@ -20,9 +20,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from quantop import *
-from control import *
-from integration import *
-from routines import *
+import control as ctrl
+import integration
+import routines
+
+
+__all__ = ['propagator']
 
 
 class propagator:
@@ -91,7 +94,7 @@ class propagator:
                 
             # Convert Lie dimensonality into number of qubits.
             n = log( dim + 1 ) / log( 4 )
-            self.hamiltonians = product_operator( n )
+            self.hamiltonians = routines.product_operator( n )
             self.number_qubits = n
             self.lie_algebra = "su(" + str(n) + ")"
             
@@ -193,7 +196,7 @@ class propagator:
                 # Hamiltonians match, append controls together
                 ctrl1 = target.control.control
                 ctrl2 = self.control.control
-                ctrl = vstack( (ctrl1, ctrl2) )
+                ctrl0 = vstack( (ctrl1, ctrl2) )
                 
                 # Adjust time vectors.  The second control should
                 # start just as the first one finishes.
@@ -209,7 +212,7 @@ class propagator:
                 t = vstack( (t1, t2) )
                 
                 # Stack control and time vectors.
-                ARR = hstack( (ctrl, t) )
+                ARR = hstack( (ctrl0, t) )
                 
             else:
                 raise ValueError('Hamiltonians do not match. ' +\
@@ -219,8 +222,40 @@ class propagator:
             raise TypeError('Multiplication is only defined between ' +\
                       'propagator objects.')
         
-        return propagator( control(ARR) , self.hamiltonians )
+        return propagator( ctrl.control(ARR) , self.hamiltonians )
     
+    
+    def __call__(self, time = None):
+        """
+        
+        """
+        
+        if time == None:
+            return self.solve()
+        
+        elif time > self.timemax or time < self.timemin:
+            raise ValueError('Time is not within interval bounds' + \
+                  ' ( %.2E , %.2E ).' %(self.timemin, self.timemax))
+        
+        try:
+            t = min( self.control.times[ self.control.times - time > 0 ] )
+        except ValueError:
+            # We must be at the higher time limit
+            t = time
+            
+        index = self.times.tolist().index( t )
+        
+        # Cut controls over interval (timemin, time)
+        arr = self.control.control[ 0:index+1 , : ]
+        times = self.times[ 0:index+1 ]
+        ARR = hstack( (arr,times) )
+        
+        # Form new propagator
+        U = propagator( ctrl.control( ARR ) )
+        
+        # Solve propagator
+        return U.solve()
+
     
     def solve(self, method = 'trotter'):
         """
@@ -228,19 +263,20 @@ class propagator:
         """
         
         if method == 'trotter':
-            U = trotter( self.control, self.hamiltonians )
+            U = integration.trotter( self.control, \
+                self.hamiltonians )
             
         elif method == 'dyson':
-            U = dyson( self.control, self.hamiltonians, \
-                       self.order )
+            U = integration.dyson( self.control, \
+                self.hamiltonians, self.order )
             
         elif method == 'magnus':
-            U = magnus( self.control, self.hamiltonians, \
-                        self.order )
+            U = integration.magnus( self.control, \
+                self.hamiltonians, self.order )
             
         elif method == 'lindblad':
-            U = lindblad( self.control, self.hamiltonians, \
-                          self.lindblad )
+            U = integration.lindblad( self.control, \
+                self.hamiltonians, self.lindblad )
             
         else:
             raise ValueError('Method %s was not understood.' %method)

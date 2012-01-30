@@ -22,6 +22,7 @@
 from quantop import *
 from scipy.integrate import trapz, cumtrapz, simps, romb
 
+__all__ = ['integrate','trotter','dyson','magnus','lindblad']
 
 def integrate( ctrl, hamiltonians, method = 'trapz' ):
     """

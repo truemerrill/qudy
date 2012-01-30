@@ -22,8 +22,8 @@
 from quantop import *
 #from numpy import savetxt, genfromtxt, load, save, savez, all, diff, \
 from numpy import all, diff, interp
-from warnings import warn
 
+__all__ = ['control','load','save']
 
 class control:
     """
@@ -479,3 +479,10 @@ def load( filename, format = None ):
     
     # Return a control object
     return control(ARR)
+
+
+def save( ctrl, filename, format = 'csv' ):
+    """
+    A function to save control instances
+    """
+    ctrl.save(filename, format)

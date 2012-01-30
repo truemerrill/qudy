@@ -31,6 +31,7 @@ from numpy.linalg import eig, det
 from scipy.linalg import kron, logm, norm, inv, sqrtm, eigh
 from scipy.linalg import expm2 as expm
 from scipy import sqrt
+from warnings import warn
 
 # Set print options to make print formatting pretty.  The numerical
 # precision of the calculation is not affected.
@@ -44,12 +45,14 @@ def format_long():
     """
     set_printoptions(suppress = False)
 
+
 def format_short():
     """
     Function to interactivly change print options within a python
     shell.  Sets suppression of long decimals.
     """
     set_printoptions(suppress = True)
+
 
 class operator(matrix):
     """
