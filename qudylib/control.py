@@ -100,12 +100,51 @@ class control:
             try:
                 t_arr = t_arr.__array__()
                 self.times = t_arr.flatten()
+                self.times.shape = (len(self.times),1)
                 self.timemax = t_arr.max()
                 self.timemin = t_arr.min()
                 
             except AttributeError:
                 raise TypeError('Time values must be an array type.')
+
+            ARR = copy( self.times )
+            for index in range( len(args) - 1 ):
+                arg = args[index]
+                
+                # Is arg a function? Map to a discrete array.
+                if hasattr( arg, '__call__' ):
+                    arr = array( map( arg , self.times ) )
+                    arr.shape = (len(self.times),1)
+                    ARR = hstack(( arr , ARR ))
+                    
+                # Is arg an array? Check that it is of proper length.
+                elif hasattr( arg , '__array__' ):
+                    arr = arg
+                    
+                    # Orient arrays in the correct direction
+                    if len( arr.shape ) == 1:
+                        arr.shape = ( len(arr) , 1 )
+                    
+                    if arr.shape[0] == len(self.times):
+                        ARR = hstack(( arr , ARR ))
+                        
+                    else:
+                        raise ValueError('Dimension mismatch.')
+                    
+                # Then arg was not understood, throw an error.
+                else:
+                    raise TypeError('The following argument was not ' + \
+                          'understood: \n\n%s\n' %( str(arg) ))
+                 
+            # Count number of controls
+            number_controls = ARR.shape[1] - 1
             
+            # Save relevant data to self
+            self.control = ARR[:, 0:number_controls]
+            self.number_controls = number_controls
+            self.dimension = number_controls
+            
+            """
             # For the remaining arguments, convert them into controls.
             number_controls = len(args) - 1
             self.control = zeros([len(self.times), number_controls])
@@ -135,7 +174,8 @@ class control:
                     
             self.number_controls = number_controls
             self.dimension = number_controls
-                    
+            """
+        
         # Otherwise the input must be one large array, e.g. input ARR.
         # The last column is interpreted as the time vector, and the
         # remaining columns as control functions.

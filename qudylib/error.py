@@ -127,5 +127,20 @@ class error:
         """
         Function to display error objects when called on the command line.
         """
-        return self.model.repr( self.error_parameters )
+        try:
+            return self.model.repr( self.error_parameters )
+        
+        except AttributeError:
+            
+            # Error model must have left off a repr routine.  Use a
+            # generic method.
+            
+            num_epsilons = len( self.error_parameters )
+            string = "unspecified error: "
+            
+            for index in range(num_epsilons):
+                s = "\n    epsilon%i:\t%.2E" %( index+1 , self.error_parameters[index] )
+                string = string + s
+                
+            return string
         

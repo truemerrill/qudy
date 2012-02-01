@@ -1,3 +1,5 @@
+from ..control import control
+
 def call( ctrl, error_parameters, **keyword_args ):
     """
     arguments should be
@@ -19,10 +21,11 @@ def call( ctrl, error_parameters, **keyword_args ):
         epsilon = error_parameters
     
     # Update amplitude of control values.
-    ctrl.control = (1.0 + epsilon) * ctrl.control
-    
+    arr = (1.0 + epsilon) * ctrl.control
+    t = ctrl.times
+
     # Return modified control.
-    return ctrl
+    return control(arr,t)
 
 
 def default_parameters():
@@ -39,5 +42,5 @@ def repr( error_parameters ):
     """
     
     string = "amplitude error: \n" + \
-             "\tepsilon:\t%.2E" %( error_parameters[0] )
+             "    epsilon:\t%.2E" %( error_parameters[0] )
     return string
