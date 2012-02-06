@@ -1,4 +1,4 @@
-# CONTROL.PY
+# ERROR.PY
 #
 # A class for quantum control functions
 # 

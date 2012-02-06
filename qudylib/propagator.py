@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from quantop import *
-import control as ctrl
+import control
 import integration
 import routines
 
@@ -222,7 +222,7 @@ class propagator:
             raise TypeError('Multiplication is only defined between ' +\
                       'propagator objects.')
         
-        return propagator( ctrl.control(ARR) , self.hamiltonians )
+        return propagator( control.control(ARR) , self.hamiltonians )
     
     
     def __call__(self, time = None):
@@ -251,7 +251,7 @@ class propagator:
         ARR = hstack( (arr,times) )
         
         # Form new propagator
-        U = propagator( ctrl.control( ARR ) )
+        U = propagator( control.control( ARR ) )
         
         # Solve propagator
         return U.solve()
