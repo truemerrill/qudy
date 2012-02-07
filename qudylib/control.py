@@ -445,7 +445,27 @@ class control:
         
         if format == 'csv':
             # Construct headers, footers, etc
-            HEADER = 'This is the header string.'
+            try:
+                import datetime
+                now = datetime.datetime.now()
+                timestamp = "%i-%i-%i" %(now.year, now.month, now.day)
+            
+            except ImportError:
+                timestamp = "X-X-X"
+            
+            HEADER = "# QUDY\n" +\
+                     "# CONTROL SPECIFICATION FORMAT\n" +\
+                     "#\n" +\
+                     "# FILENAME : '%s'\n" %(filename + ".csv") +\
+                     "# DATE : %s\n" %(timestamp) +\
+                     "#\n" +\
+                     "# This file specifies a set of control functions for a quantum control\n" +\
+                     "# system.  Each column (excluding the final column) corresponds to a\n" +\
+                     "# single control function sampled over a discrete set of time values.\n" +\
+                     "# The final column represents the discrete time values that the\n" +\
+                     "# control functions are sampled over.\n" +\
+                     "#\n\n"
+            
             FOOTER = 'This is the footer string.'
             FORMAT = '%.12e'
             DELIMITER = ',\t'
@@ -457,6 +477,14 @@ class control:
             f = open( filename + '.csv' , 'w' )
             numpy.savetxt(f, ARR, FORMAT, DELIMITER) 
             f.close()
+            
+            # Manually add the header
+            f = open( filename + '.csv' , 'r+')
+            data = f.read()            # read everything in the file
+            f.seek(0)                  # rewind
+            f.write(HEADER + data)     # write the new line before
+            f.close()
+            
             if self.verbose:
                 print 'Saved to %s' %(filename + '.csv') 
             
