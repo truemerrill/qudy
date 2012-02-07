@@ -3,4 +3,4 @@
 QUDY : Qubit Dynamics Simulator 
 ============================================================
 
-Insert a README later.
+Insert a README later...
