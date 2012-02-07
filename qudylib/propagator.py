@@ -96,7 +96,7 @@ class propagator:
             n = log( dim + 1 ) / log( 4 )
             self.hamiltonians = routines.product_operator( n )
             self.number_qubits = n
-            self.lie_algebra = "su(" + str(n) + ")"
+            self.lie_algebra = "su(" + str(2**n) + ")"
             
         # If there are two arguments, then the user gave both a set of
         # controls and also a set of Hamiltonians.
@@ -110,6 +110,10 @@ class propagator:
             self.control = args[0]
             self.hamiltonians = args[1]
             self.lindblad = args[2]
+            
+            # Since Lindblad operators were specified, we should use
+            # Master equation methods.  Calculate superoperator
+            # representations of relevant operators.
             
         if not len( self.control ) == len( self.hamiltonians ):
             raise ValueError("Control dimension mismatch.  Controls and " + \

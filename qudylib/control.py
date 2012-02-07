@@ -464,7 +464,7 @@ class control:
                      "# single control function sampled over a discrete set of time values.\n" +\
                      "# The final column represents the discrete time values that the\n" +\
                      "# control functions are sampled over.\n" +\
-                     "#\n\n"
+                     "#\n"
             
             FOOTER = 'This is the footer string.'
             FORMAT = '%.12e'
@@ -526,12 +526,11 @@ def load( filename, format = None ):
     if format == None:
         import os.path
         format = os.path.splitext(filename)[1][1:]
-        del os.path
     
     # Reconstitute array preconstructor    
     import numpy
     if format == 'csv':
-        ARR = numpy.loadtxt(f)
+        ARR = numpy.loadtxt(f, delimiter = ',\t')
     
     elif format == 'npy':
         ARR = numpy.load(f)

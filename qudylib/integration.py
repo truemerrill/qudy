@@ -218,5 +218,28 @@ def magnus( ctrl, hamiltonians, order = 4 ):
     return NotImplemented
 
 
-def lindblad( ctrl, hamiltonians, channels ):
+def lindblad( ctrl, hamiltonians, channels, **keyword_arguments ):
+    """
+    Solves a bilinear control system which is coupled to a Lindblad
+    master equation.  The expansion is not checked for convergence.
+    
+    **Forms:**
+    
+       * ``lindblad(ctrl, hamiltonians, channels)``
+       * ``lindblad(ctrl, hamiltonians, channels, method = 'method')``
+       * ``lindblad(ctrl, hamiltonians, channels, method = 'method', order = n)``
+       
+    **Args:**
+    
+       * *ctrl* : An instance of the control class.  Contains time 
+    """
+    hilbert_dimension = sqrt( hamiltonians[0].size )
+    identity = operator( eye( [hilbert_dimension, hilbert_dimension] ) )
+    
+    def right_map( H ):
+        return H|identity
+    
+    def left_map( H ):
+        return identity|(H.transpose())
+        
     return NotImplemented
