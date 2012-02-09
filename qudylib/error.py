@@ -85,6 +85,7 @@ class error:
         Initialize an error instance.
         """
         
+        #print "testing"
         # First argument should always be the model name
         model_name = args[0]
         

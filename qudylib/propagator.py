@@ -125,6 +125,11 @@ class propagator:
         self.timemin    =  self.control.timemin
         self.timemax    =  self.control.timemax
         
+        # Create an ideal_control.  For propagator instances, these
+        # are identical to control, however for imperfect instances
+        # these differ.
+        self.ideal_control = self.control
+        
         # Parse through keyword arguments.  Sets default solution
         # method.  Other keywords that are not understood will be
         # quietly ignored.
@@ -191,15 +196,16 @@ class propagator:
         """
         
         def H_check( h1, h2 ):
-            # todo : fix so that hamiltonians are checked.
+            # todo : fix so that hamiltonians are checked.  Not quite
+            # sure if this is 100% foolproof.
             return h1 == h2
         
         try:
             if H_check( self.hamiltonians , target.hamiltonians ):
                 
                 # Hamiltonians match, append controls together
-                ctrl1 = target.control.control
-                ctrl2 = self.control.control
+                ctrl1 = target.ideal_control.control
+                ctrl2 = self.ideal_control.control
                 ctrl0 = vstack( (ctrl1, ctrl2) )
                 
                 # Adjust time vectors.  The second control should
