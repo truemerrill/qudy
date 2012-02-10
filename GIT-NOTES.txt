@@ -4,7 +4,7 @@ Notes about the GIT version control system
 * Clone (check out) a repository.  This repository is currently held
 	at http://merrill.homenet.org/~true/git/qudy.git.
   
-	``git clone http://merrill.homenet.org/~true/git/qudy.git``
+	``git clone git://merrill.homenet.org/qudy.git``
 
 * Add changes to the repository.  Even if the file is already stored
   on the repository, when a file is modified, it has to be explicitly
@@ -12,7 +12,7 @@ Notes about the GIT version control system
 	
 	``git add file``
 	
-* Commit changes to the repository
+* Commit changes to your local repository
 	
 	``git commit``
 
@@ -23,7 +23,13 @@ Notes about the GIT version control system
 	``git commit -a``
 
 * Update your working copy to the most recent version (merge with the
-  HEAD branch).  In git, updating is performed with the pull command.
+  MASTER branch).  In git, updating is performed with the pull command.
 	
-	``git pull``
-	``git pull http://merrill.homenet.org/~true/git/qudy.git``
+	``git pull git://merrill.homenet.org/qudy.git master``
+	
+* Push your changes to the main server.  This requires SSH access to
+  the git user account. I find it most convienient to setup a git
+  remote alias.
+	
+	``git remote add merrill.homenet.org git@merrill.homenet.org:/var/www/git/qudy.git``
+	``git push merrill.homenet.org master`` 

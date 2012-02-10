@@ -126,6 +126,16 @@ class operator(matrix):
                 l[i] = '   ' + l[i]
         return '\n'.join(l)
 
+    def __eq__(self, x):
+        # Compare each element of two arrays.  If each element
+        # matches, then return True,  else return false.
+        if isinstance(x, operator):
+            boolean = ((self - x) == 0).all()
+            return boolean
+        
+        else:
+            return matrix.__eq__(self,x)
+            
     def tomatlab(self, precision = 8):
         """
         Return a string representation of the operator, compatible

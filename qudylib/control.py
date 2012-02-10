@@ -143,39 +143,7 @@ class control:
             self.control = ARR[:, 0:number_controls]
             self.number_controls = number_controls
             self.dimension = number_controls
-            
-            """
-            # For the remaining arguments, convert them into controls.
-            number_controls = len(args) - 1
-            self.control = zeros([len(self.times), number_controls])
-            
-            for index in range(number_controls):
-                arg = args[index]
-                
-                # Is arg a function?  Map to a discrete array.
-                if hasattr( arg, '__call__' ):
-                    arr = array( map( arg , self.times ) )
-                    self.control[:,index] = arr
-                
-                # Is arg an array? Check that it is of proper length.
-                elif hasattr( arg , '__array__' ):
-                    arr = arg
                     
-                    if len(arr) == len(self.times):
-                        self.control[:,index] = arr
-                    
-                    else:
-                        raise ValueError('Dimension mismatch.')
-                    
-                # Then arg was not understood, throw an error.
-                else:
-                    raise TypeError('The following argument was not ' + \
-                          'understood: \n\n%s\n' %( str(arg) ))
-                    
-            self.number_controls = number_controls
-            self.dimension = number_controls
-            """
-        
         # Otherwise the input must be one large array, e.g. input ARR.
         # The last column is interpreted as the time vector, and the
         # remaining columns as control functions.

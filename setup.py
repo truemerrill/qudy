@@ -44,14 +44,18 @@ SCRIPTS.append( 'qudy' )
 setup (
     name = 'qudy',
     version = qudylib.release,
-    author = 'True Merrill, John Patrick Addison, Chingiz K, Kenneth Brown',
+    author = 'True Merrill and collaborators',
     author_email = 'true.merrill@gatech.edu',
     url = 'http://ww2.chemistry.gatech.edu/~brown/',
     packages = ['qudylib','qudylib/error_models','qudylib/hardware_models'],
     scripts = SCRIPTS,
     license = 'LICENSE.txt',
     description = 'A qubit dynamics simulator',
-    long_description = open('README.txt').read()
+    long_description = open('README.txt').read(),
+    install_requires = [
+        "numpy >= 1.4.1",
+        "scipy >= 0.7.2",
+    ]
 )
 
 #

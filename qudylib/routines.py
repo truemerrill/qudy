@@ -125,7 +125,7 @@ def fidelity(A, B):
 def infidelity(A, B):
     """
     Calculates the infidelity beween to unitaries.  Infidelity is
-    defined as :math"`1 - F(A,B)`, where :math:`F(A,B)` is the
+    defined as :math`1 - F(A,B)`, where :math:`F(A,B)` is the
     fidelity between matrices :math:`A` and :math:`B`.
     
     **Forms:**

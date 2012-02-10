@@ -23,7 +23,7 @@ from quantop import *
 import control
 import integration
 import routines
-
+import imperfect
 
 __all__ = ['propagator']
 
@@ -196,8 +196,8 @@ class propagator:
         """
         
         def H_check( h1, h2 ):
-            # todo : fix so that hamiltonians are checked.  Not quite
-            # sure if this is 100% foolproof.
+            # Cleverly uses a method in the operator class to
+            # determine if Hamiltonians are identical.
             return h1 == h2
         
         try:
@@ -231,9 +231,17 @@ class propagator:
         except AttributeError:
             raise TypeError('Multiplication is only defined between ' +\
                       'propagator objects.')
+
+        if isinstance(target, imperfect.imperfect):
+            # Check if target is an imperfect propagator.  If it is,
+            # we should default to returning an imperfect propagator.
+            return imperfect.imperfect( control.control(ARR) , \
+                               self.hamiltonians, target.error )
         
-        return propagator( control.control(ARR) , self.hamiltonians )
-    
+        else:
+            # Must be a normal propagator.
+            return propagator( control.control(ARR) , self.hamiltonians )
+
     
     def __call__(self, time = None):
         """

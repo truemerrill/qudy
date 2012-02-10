@@ -33,3 +33,13 @@ def default_parameters():
     """
     
     return [0.1]
+
+
+def repr( error_parameters ):
+    """
+    Function to display amplitude objects when called on the command line
+    """
+    
+    string = "addressing error: \n" + \
+             "    epsilon:\t%.2E" %( error_parameters[0] )
+    return string

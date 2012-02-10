@@ -1,6 +1,7 @@
 include qudy
 include *.txt
 prune PACKAGING.txt
+prune CHANGES.txt
 recursive-include examples/composite-pulses *.py
 recursive-include examples/decay *.py
 recursive-include examples/noise *.py
