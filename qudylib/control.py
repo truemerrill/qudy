@@ -394,6 +394,13 @@ class control:
         for index in range( self.number_controls ):
             plt.plot( self.times, self.control[:,index] )
         
+        # Ensure that the axes are resonably scaled
+        c_max = self.control.max()
+        c_min = self.control.min()
+        scale = c_max - c_min
+        ds = 0.1 * scale
+        plt.axis([self.timemin, self.timemax, c_min-ds, c_max+ds])
+            
         # Labels and annotations
         plt.xlim( (self.timemin, self.timemax) )
         plt.xlabel(r'$t$')

@@ -25,7 +25,7 @@ import integration
 import routines
 import imperfect
 
-__all__ = ['propagator']
+__all__ = ['propagator','rotation','R']
 
 
 class propagator:
@@ -44,6 +44,7 @@ class propagator:
     
     **Forms:**
     
+       * `propagator(ctrl)`
        * `propagator(ctrl, hamiltonians)`
        * `propagator(ctrl, hamiltonians, solution = 'method')`
        * `propagator(ctrl, hamiltonians, solution = 'method', order = n)`
@@ -81,8 +82,9 @@ class propagator:
             
     **Returns:**
     
-       * :math:`U`, matrix solution to the control equation 
-         :math:`\dot{U}(t) = \sum_\mu u_\mu(t) H_\mu U(t)`.
+       * :math:`U`, propagator representing the solution to the
+         control equation :math:`\dot{U}(t) = \sum_\mu u_\mu(t) H_\mu
+         U(t)`.
     """
     def __init__(self, *args, **keyword_args):
         
@@ -300,3 +302,103 @@ class propagator:
             raise ValueError('Method %s was not understood.' %method)
         
         return U
+
+
+def rotation( *args, **keyword_args ):
+    """
+    A function to form propagators that represent rotations in SU(2).
+    These may be multiplied to produce a pulse sequence.
+    
+     **Forms:**
+    
+       * `R( axis )`
+       * `R( theta, phi )`
+       * `R( theta, axis )`
+       
+    **Args:**
+      
+       * *axis* : A three-element list, tuple or array representing
+         components of a Bloch vector.  If axis is the sole input,
+         then the rotation angle is interpreted to be the length of
+         the axis vector.
+       * *theta* : A rotation angle.
+       * *phi* : A field phase.  The interaction frame Hamiltonian for
+          this phase is proportional to:math:`H = \cos \phi X + \sin
+          \phi Y`.
+
+   **Optional keywords:**
+          
+     * See the propagator class for keywords.
+     
+   **Returns:**
+    
+       * :math:`U = R(\theta,\phi)`,
+    """
+    
+    # Check input arguments
+    if len( args ) == 1:
+        
+        # Single argument, so must have been the rotation axis. Check
+        # if argument is a 3-vector.
+        
+        arg = args[0]
+        try:
+            
+            if arg.__len__() == 3:
+                 theta = sqrt( arg[0]**2 + arg[1]**2 + arg[2]**2 )
+                 vec  = array([ arg[0], arg[1], arg[2] ]) / theta
+                 
+            else:
+                raise SyntaxError("Axis must be a 3-vector.")
+            
+        except AttributeError:
+            raise SyntaxError("Axis must be a 3-vector.")
+        
+    elif len( args ) == 2:
+        
+        # Either an angle and an axis or an angle and a phase.
+        # Distinguish between the two and construct a 3-vector.
+        
+        theta = args[0]
+        arg = args[1]
+        try:
+            
+            if arg.__len__() == 3:
+                # Normalize the axis
+                norm = sqrt( arg[0]**2 + arg[1]**2 + arg[2]**2 )
+                vec  = array([ arg[0], arg[1], arg[2] ]) / (theta*norm)
+                
+            else:
+                raise SyntaxError("Axis must be a 3-vector.")
+            
+        except AttributeError:
+            # Must have specified a phase instead of an axis.  Produce
+            # one for the user.
+            
+            phi = arg
+            vec = array([cos(phi), sin(phi), 0])
+            
+    else:
+        raise SyntaxError("Improper number of arguments.")
+    
+    # Construct the control function and the propagator.  We assume
+    # square pulse propagators (i.e. constant controls over the
+    # interval).
+    
+    ctrl = array([[vec[0], vec[1], vec[2], 0    ],
+                  [vec[0], vec[1], vec[2], theta]])
+    
+    u = control.control(ctrl)
+    return  propagator( u, **keyword_args )
+
+
+def R( *args, **keyword_args ):
+    """
+    A convenient shortcut for rotation().  See rotation().
+    """
+    return rotation( *args, **keyword_args )
+    
+    
+                
+        
+            
