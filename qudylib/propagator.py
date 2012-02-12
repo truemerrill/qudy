@@ -52,11 +52,11 @@ class propagator:
     **Args:**
       
        * *ctrl* : An instance of the control class.  Contains time
-          information as well as k-many control functions.
+         information as well as k-many control functions.
        * *hamiltonians* :  A list or array of k-many Hamiltonians.  
-          The Hamiltonians must be square matrices of the same 
-          dimensionality.  It is recommended to use the operator 
-          class.
+         The Hamiltonians must be square matrices of the same 
+         dimensionality.  It is recommended to use the operator 
+         class.
     
     **Optional keywords:**
     
@@ -98,7 +98,7 @@ class propagator:
             n = log( dim + 1 ) / log( 4 )
             self.hamiltonians = routines.product_operator( n )
             self.number_qubits = n
-            self.lie_algebra = "su(" + str(2**n) + ")"
+            self.lie_algebra = "su(%i)" %(int(2**n))
             
         # If there are two arguments, then the user gave both a set of
         # controls and also a set of Hamiltonians.
@@ -311,20 +311,19 @@ def rotation( *args, **keyword_args ):
     
      **Forms:**
     
-       * `R( axis )`
-       * `R( theta, phi )`
-       * `R( theta, axis )`
+       * `rotation( axis )`
+       * `rotation( theta, phi )`
+       * `rotation( theta, axis )`
        
     **Args:**
       
        * *axis* : A three-element list, tuple or array representing
-         components of a Bloch vector.  If axis is the sole input,
-         then the rotation angle is interpreted to be the length of
-         the axis vector.
+       components of a Bloch vector.  If axis is the sole input,
+       then the rotation angle is interpreted to be the length of
+       the axis vector.
        * *theta* : A rotation angle.
        * *phi* : A field phase.  The interaction frame Hamiltonian for
-          this phase is proportional to:math:`H = \cos \phi X + \sin
-          \phi Y`.
+       this phase is proportional to:math:`H = \cos \phi X + \sin \phi Y`.
 
    **Optional keywords:**
           

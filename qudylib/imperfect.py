@@ -24,7 +24,7 @@ from propagator import *
 import error, control, copy
 
 
-__all__ = ['imperfect']
+__all__ = ['imperfect','imperfect_rotation','M']
 
 
 class imperfect( propagator ):
@@ -32,7 +32,23 @@ class imperfect( propagator ):
     A class for imperfect quantum dynamical propagators.  Similar to
     the propagator class, however now we associate an error model that
     distorts the input control functions.
-    
+
+    **Forms:**
+
+       * `imperfect(ctrl, err)`
+       * `imperfect(ctrl, 'error model')
+       * `imperfect(ctrl, hamiltonians, err)`
+
+    **Args:**
+      
+       * *ctrl* : An instance of the control class.  Contains time
+          information as well as k-many control functions.
+       * *'error model'* a string corresponding to the name of an
+         error model.
+       * *hamiltonians* :  A list or array of k-many Hamiltonians.  
+         The Hamiltonians must be square matrices of the same 
+         dimensionality.  It is recommended to use the operator 
+         class.
     """
     
     def __init__(self, *args, **keyword_args):
@@ -136,3 +152,55 @@ class imperfect( propagator ):
             #ideal = control.control( self.ideal_control, self.times )
             distorted = self.error( self.ideal_control )
             self.control = distorted
+
+
+def imperfect_rotation( *args, **keyword_args ):
+    """
+    A function to form propagators that represent rotations in SU(2).
+    These may be multiplied to produce a pulse sequence.
+    
+    **Forms:**
+    
+       * `imperfect_rotation( axis, err )`
+       * `imperfect_rotation( theta, phi, err )`
+       * `imperfect_rotation( theta, axis, err )`
+       
+    **Args:**
+      
+       * *axis* : A three-element list, tuple or array representing
+       components of a Bloch vector.  If axis is the sole input,
+       then the rotation angle is interpreted to be the length of
+       the axis vector.
+       * *theta* : A rotation angle.
+       * *phi* : A field phase.  The interaction frame Hamiltonian for
+       this phase is proportional to:math:`H = \cos \phi X + \sin \phi Y`.
+
+    **Optional keywords:**
+          
+       * See the propagator class for keywords.
+     
+    **Returns:**
+    
+       * :math:`V = M(\theta,\phi)`,
+    """
+
+    # Pull out last argument.  It should be an instance of the
+    # error class.  If it instead a string, interpret the string
+    # as a name of an error function.
+        
+    err = args[ len(args) - 1 ]
+
+    # Construct ideal rotation, steal control to make an imperfect
+    # propagator.
+    U = rotation( *args[0:(len(args)-1)], **keyword_args )
+    ctrl = U.control
+
+    return imperfect( ctrl, err )
+
+
+def M( *args, **keyword_args ):
+    """
+    A convenient shortcut for imperfect_rotation().  See
+    imperfect_rotation().
+    """
+    return imperfect_rotation( *args, **keyword_args )
