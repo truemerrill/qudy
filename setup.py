@@ -1,12 +1,12 @@
 from distutils.core import setup
-import qudylib
+import qudy
 import os
 
 
 def check_dir( target ):
     # Recursively check a target directory for python scripts.  This
     # function makes it easy to automatically package scripts and
-    # input files in the binary distribution.
+    # input files in the source distribution.
     
     # Save current path
     root = os.getcwd()
@@ -38,24 +38,45 @@ def check_dir( target ):
 # Grab all scripts in the examples directory
 SCRIPTS = check_dir('examples')
 
-# Add the "qudy" driver script
-SCRIPTS.append( 'qudy' )
+# Try to build documentation using sphinx.  First check to see if the
+# current tree is a development version. Query the user for their
+# build preference.
+
+root = os.getcwd()
+docs = root + '/docs'    
+if os.path.exists( docs + '/source' ):
+    
+    query = raw_input("Build the documentation (y/n) : ")
+    if query.lower() == "y":
+    
+        print "Attempting to build documentation."
+        try:
+            os.chdir( docs )
+            os.system("make html")
+            os.system("make latexpdf")
+            os.chdir( root )
+            
+        except:
+            print "Could not build documentation."
+    
+    else:
+        
+        print "Documentation will not be built"
+
 
 setup (
     name = 'qudy',
-    version = qudylib.release,
+    version = qudy.release,
     author = 'True Merrill and collaborators',
     author_email = 'true.merrill@gatech.edu',
     url = 'http://ww2.chemistry.gatech.edu/~brown/',
-    packages = ['qudylib','qudylib/error_models','qudylib/hardware_models'],
-    scripts = SCRIPTS,
+    packages = ['qudy','qudy/error_models','qudy/hardware_models', \
+                'qudy/optimal_control'],
     license = 'LICENSE.txt',
     description = 'A qubit dynamics simulator',
     long_description = open('README.txt').read(),
-    install_requires = [
-        "numpy >= 1.4.1",
-        "scipy >= 0.7.2",
+    requires = [
+        "numpy (>= 1.4.1)",
+        "scipy (>= 0.7.2)",
     ]
 )
-
-#

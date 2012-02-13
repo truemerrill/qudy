@@ -1,6 +1,6 @@
 Control
 =======
 
-.. automodule:: qudylib.control
+.. automodule:: qudy.control
    :members:
    :undoc-members:

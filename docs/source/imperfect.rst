@@ -1,6 +1,6 @@
 Imperfect
 =========
 
-.. automodule:: qudylib.imperfect
+.. automodule:: qudy.imperfect
    :members:
    :undoc-members:

@@ -1,6 +1,6 @@
 Propagator
 ==========
 
-.. automodule:: qudylib.propagator
+.. automodule:: qudy.propagator
    :members:
    :undoc-members:

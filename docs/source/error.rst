@@ -1,6 +1,6 @@
 Error
 =====
 
-.. automodule:: qudylib.error
+.. automodule:: qudy.error
    :members:
    :undoc-members:
