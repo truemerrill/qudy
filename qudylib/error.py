@@ -144,3 +144,9 @@ class error:
                 
             return string
         
+        
+    def copy(self):
+        """
+        Function to make copy of self in memory.
+        """
+        return error( self.model_name, self.error_parameters )

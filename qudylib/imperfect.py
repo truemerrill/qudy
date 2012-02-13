@@ -21,7 +21,7 @@
 
 from quantop import *
 from propagator import *
-import error, control, copy
+import error, control
 
 
 __all__ = ['imperfect','imperfect_rotation','M']
@@ -73,7 +73,7 @@ class imperfect( propagator ):
         propagator.__init__( self, *args[0:len(args)-1], **keyword_args )
 
         # Save an ideal set of controls
-        self.ideal_control = copy.copy( self.control )
+        self.ideal_control = self.control.copy()
         
         # Update the error
         self.update_error()
@@ -101,10 +101,47 @@ class imperfect( propagator ):
         # imperfect instance and make the error match self.
         
         U = propagator.__mul__(self, target)
-        V = imperfect( U.ideal_control , self.error )
+        V = imperfect( U.ideal_control , self.hamiltonians, self.error )
         return V
     
     
+    def copy(self):
+        """
+        Create an independent copy of self in memory.
+        """
+        ctrl = self.ideal_control.copy()
+        hamiltonians = self.hamiltonians[:]
+        error = self.error.copy()
+
+        c = imperfect( ctrl, hamiltonians, error )
+        c.solution_method = str( copy( self.solution_method ) )
+        c.order = int( copy( self.order ) )
+        
+        return c
+    
+    
+    def inverse(self):
+        """
+        Calculates the propagator inverse of self.  Note that unlike
+        in matrix methods, which would require diagonalizing the
+        propagator, here we compute the inverse by a reording of the
+        control functions (much faster).
+        """
+        
+        # Calculate inverse control
+        ctrl = self.ideal_control.control.copy()
+        inv_ctrl = - flipud( ctrl )
+        
+        # Create copy of self
+        c = self.copy()
+        
+        # Replace c.control with inverse controls
+        c.ideal_control.control = inv_ctrl
+        c.update_error()
+
+        return c
+
+        
     def update_error(self, *args):
         """
         Function to update the error model.  Using the new error model, the

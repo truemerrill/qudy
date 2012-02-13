@@ -25,6 +25,7 @@ import integration
 import routines
 import imperfect
 
+
 __all__ = ['propagator','rotation','R']
 
 
@@ -275,7 +276,42 @@ class propagator:
         
         # Solve propagator
         return U.solve()
+    
+    
+    def copy(self):
+        """
+        Creates an independent copy of self in memory.
+        """
+        
+        ctrl = self.control.copy()
+        hamiltonians = self.hamiltonians[:]
+        c = propagator( ctrl, hamiltonians )
+        c.solution_method = str( copy( self.solution_method ) )
+        c.order = int( copy( self.order ) )
+        
+        return c
 
+    
+    def inverse(self):
+        """
+        Calculates the propagator inverse of self.  Note that unlike
+        in matrix methods, which would require diagonalizing the
+        propagator, here we compute the inverse by a reording of the
+        control functions (much faster).
+        """
+        
+        # Calculate inverse control
+        ctrl = self.control.control.copy()
+        inv_ctrl = - flipud( ctrl )
+        
+        # Create copy of self
+        c = self.copy()
+        
+        # Replace c.control with inverse controls
+        c.control.control = inv_ctrl
+        
+        return c
+        
     
     def solve(self, method = 'trotter'):
         """

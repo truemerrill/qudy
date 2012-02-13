@@ -26,7 +26,7 @@
 from numpy import Inf, NaN, isinf, isnan, isreal, isscalar, log, log10, \
      ones, eye, pi, sin, cos, tan, arcsin, arccos, arctan, exp, zeros, \
      trace, matrix, array, real, imag, conj, arange, floor, ceil, mean, \
-     resize, diag, set_printoptions, hstack, vstack, copy
+     resize, diag, set_printoptions, hstack, vstack, copy, flipud
 from numpy.linalg import eig, det
 from scipy.linalg import kron, logm, norm, inv, sqrtm, eigh
 from scipy.linalg import expm2 as expm

@@ -245,6 +245,20 @@ class control:
         length of the control.  Returns self.number_controls
         """
         return self.number_controls
+    
+    
+    def copy(self):
+        """
+        Creates an independent copy of self in memory.
+        """
+        
+        ctrl = self.control.copy()
+        times = self.times.copy()
+        c = control( ctrl, times )
+        c.interpolation = str( copy( self.interpolation ) )
+        c.verbose =  bool( copy( self.verbose ) )
+        
+        return c
         
         
     def interpolate( self, time, interpolation = None ):
