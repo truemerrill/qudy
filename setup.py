@@ -49,7 +49,7 @@ if os.path.exists( docs + '/source' ):
     query = raw_input("Build the documentation (y/n) : ")
     if query.lower() == "y":
     
-        print "Attempting to build documentation."
+        print "Attempting to build documentation"
         try:
             os.chdir( docs )
             os.system("make html")
@@ -57,7 +57,7 @@ if os.path.exists( docs + '/source' ):
             os.chdir( root )
             
         except:
-            print "Could not build documentation."
+            print "Could not build documentation"
     
     else:
         

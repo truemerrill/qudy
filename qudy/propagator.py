@@ -186,7 +186,7 @@ class propagator:
         command line.
         """
         string = str( self.dimension ) + '-D propagator on t = ( ' + \
-                 str( self.timemin ) + ' , ' + str( self.timemax ) + ' )'
+                 str( self.timemin() ) + ' , ' + str( self.timemax() ) + ' )'
         return string
 
 
@@ -219,9 +219,9 @@ class propagator:
                 # To avoid the control function from having two values
                 # at the same instant in time, we add an infinitesimal
                 # delay.
-                dt_min = 1E-10 * target.timemax
+                dt_min = 1E-10 * target.timemax()
                 
-                t2 = (t2 - self.timemin) + target.timemax + dt_min
+                t2 = (t2 - self.timemin() ) + target.timemax() + dt_min
                 t = vstack( (t1, t2) )
                 
                 # Stack control and time vectors.
@@ -254,9 +254,9 @@ class propagator:
         if time == None:
             return self.solve()
         
-        elif time > self.timemax or time < self.timemin:
+        elif time > self.timemax() or time < self.timemin():
             raise ValueError('Time is not within interval bounds' + \
-                  ' ( %.2E , %.2E ).' %(self.timemin, self.timemax))
+                  ' ( %.2E , %.2E ).' %(self.timemin(), self.timemax() ))
         
         try:
             t = min( self.control.times[ self.control.times - time > 0 ] )
@@ -301,14 +301,14 @@ class propagator:
         """
         
         # Calculate inverse control
-        ctrl = self.control.control.copy()
-        inv_ctrl = - flipud( ctrl )
+        ctrl = self.control.inverse()
         
         # Create copy of self
         c = self.copy()
         
         # Replace c.control with inverse controls
-        c.control.control = inv_ctrl
+        c.control = ctrl
+        c.ideal_control = ctrl
         
         return c
         

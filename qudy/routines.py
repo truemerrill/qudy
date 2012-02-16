@@ -22,8 +22,8 @@
 
 from quantop import *
 
-__all__ = ['inner_product','norm','trace_distance', \
-           'fidelity','infidelity','commutator',    \
+__all__ = ['inner_product','projection','norm','trace_distance', \
+           'fidelity','infidelity','gram_schmidt','commutator',    \
            'product_operator','generate_algebra',   \
            'structure_constants','euler_decomposition']
 
@@ -50,6 +50,17 @@ def inner_product(A, B):
     """
     ip = trace( A.H * B )
     return ip
+
+
+def projection( U,V ):
+    """
+    Project an object V onto a basis vector U.
+    """
+    if inner_product(U,V) == 0:
+        return 0 * U
+    
+    else:
+        return inner_product(V,U) / inner_product(U,U) * U
 
 
 def norm(A):
@@ -157,6 +168,39 @@ def infidelity(A, B):
     return infd
 
 
+def gram_schmidt( vectors ):
+    """
+    From a list of vectors, generate an orthanormal basis.  If one
+    element is linearly dependent on the others, then it is removed.
+    """
+    
+    # Initialize the Gram Schmidt procedure
+    e = vectors[0] / norm(vectors[0])
+    basis = [ e ]
+    
+    # Perform Gram Schmidt procedure
+    for v in vectors[1:]:
+
+        u = v
+        for e in basis:
+            u = u - projection( e, v )
+        
+        # Normalize basis element, assuming that the norm is not equal
+        # to zero.
+            
+        if not norm(u) == 0:
+            e = u / norm(u)
+
+            # Check to see if e is already in basis
+            duplicate = False
+            for b in basis:
+                if not inner_product( e , b ) == 0:
+                    duplicate = True
+
+            if not duplicate:
+                basis.append(e)
+            
+    return basis
 
 
 # ******************************************************
@@ -248,17 +292,52 @@ def product_operator( number_qubits ):
     return prod_operators
 
 
-def generate_algebra( hamiltonians ):
+def generate_algebra( hamiltonians, max_depth = 10 ):
     """
-    Produces a set of Hamiltonains which completely span the dynamical
-    algebra from an initial seed set.  Not currently implemented.
+    Produces a set of skew-symmeterized Hamiltonians which completely
+    span the dynamical algebra from an initial seed set.  The
+    Hamiltonians act as generators, i.e. the algebra is produced by
+    repeated brackets [-iH,-iH].
+    """
     
-    .. todo::
-       
-       Implement algorithm to produce a set of Hamiltonians that
-       spans the dynamical Lie algebra.
-    """
-    return NotImplemented
+    # Take the list of Hamiltonians and convert them to generators.
+    generators = []
+    for h in hamiltonians:
+        generators.append( -1j * h )
+        
+    # Orthanormalize the set
+    generators = gram_schmidt( generators )
+    brackets = generators[:]
+    
+    for depth in range(1, max_depth + 1):
+        
+        # Measure dimension of original set
+        dimension = len(brackets)
+        
+        # Calculate new lie brackets
+        new_brackets = []
+
+        for b in brackets:
+            for g in generators:
+                
+                new_brackets.append( commutator(b,g) )
+                
+        # Orthogonalize the list of brackets to build a larger basis.
+        # This throws out repeat brackets.
+        brackets = gram_schmidt( brackets + new_brackets )
+        
+        if len(brackets) == dimension:
+            
+            print "Converged at depth k = %i." %(depth)
+            print "Algebra dimension d = %i." %(dimension)
+            
+            return brackets
+        
+    # Must not have converged
+    print "Failed to converge at depth k = %i." %(depth)
+    print "Algebra dimension d > %i." %( len(brackets) )
+    
+    return brackets
 
 
 def structure_constants( hamiltonians ):

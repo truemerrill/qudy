@@ -2,8 +2,8 @@
 #
 # Insert header describing this example.
 
-from qudylib import *
-from qudylib.quantop import *
+from qudy import *
+from qudy.quantop import *
 
 # Create a systematic error
 err = error('amplitude')
@@ -14,7 +14,7 @@ U = R( theta , 0 )                  # Ideal gate
 V = M( theta , 0 , err )            # Naive pulse
 
 phi = arccos( - theta / (4*pi) ) 
-BB1 = M(pi, phi, err) * M(2*pi, 3*phi, err) * /
+BB1 = M(pi, phi, err) * M(2*pi, 3*phi, err) * \
       M(pi, phi, err) * M(theta, 0, err )
 
 # Plot the controls

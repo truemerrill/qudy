@@ -101,8 +101,8 @@ class control:
                 t_arr = t_arr.__array__()
                 self.times = t_arr.flatten()
                 self.times.shape = (len(self.times),1)
-                self.timemax = t_arr.max()
-                self.timemin = t_arr.min()
+                # self.timemax = t_arr.max()
+                # self.timemin = t_arr.min()
                 
             except AttributeError:
                 raise TypeError('Time values must be an array type.')
@@ -156,8 +156,8 @@ class control:
                 
                 # Grab time vector (last column).
                 self.times = ARR[: , number_controls]
-                self.timemax = max( self.times )
-                self.timemin = min( self.times )
+                # self.timemax = max( self.times )
+                # self.timemin = min( self.times )
                 
                 # Assign remaining controls.
                 self.control = ARR[: , 0:(number_controls)]
@@ -214,7 +214,7 @@ class control:
         """Function to display control objects when called on the
         command line."""
         string = str( self.dimension ) + '-D control on t = ( ' + \
-                 str( self.timemin ) + ' , ' + str( self.timemax ) + ' )'
+                 str( self.timemin() ) + ' , ' + str( self.timemax() ) + ' )'
         
         if self.verbose:
             string = string + '\n' + str( self.control ) + '\n'
@@ -247,6 +247,20 @@ class control:
         return self.number_controls
     
     
+    def timemin(self):
+        """
+        Returns the minimum time slice.
+        """
+        return float( min(self.times) )
+    
+    
+    def timemax(self):
+        """
+        Returns the maximum time slice.
+        """
+        return float( max(self.times) )
+    
+    
     def copy(self):
         """
         Creates an independent copy of self in memory.
@@ -259,8 +273,28 @@ class control:
         c.verbose =  bool( copy( self.verbose ) )
         
         return c
+    
+    
+    def inverse(self):
+        """
+        function to invert controls.
         
+        An inverted set of controls defines a control system which
+        produces an inverse, i.e., backwards propagation.  The time
+        ordering of each control slice is reversed (time flows
+        backwards) and each of the components of the control functions
+        are negated.
+        """
         
+        # Make a copy of self to work with.  Flip the time ordering
+        # and invert the control components.
+        c = self.copy()
+        c.control = - flipud( c.control )
+        c.times = c.timemax() - flipud( c.times )
+        
+        return c
+        
+                
     def interpolate( self, time, interpolation = None ):
         """
         function to interpolate controls.
@@ -314,9 +348,9 @@ class control:
             interpolation = self.interpolation
         
         # Check that time lies within the control interval.
-        if (time < self.timemin) or (time > self.timemax):
+        if (time < self.timemin()) or (time > self.timemax()):
             raise ValueError('Interpolation time must lie within the' + \
-                  ' interval ( %.2E , %.2E ).' %(self.timemin,self.timemax))
+                  ' interval ( %.2E , %.2E ).' %(self.timemin(),self.timemax()) )
         
         # Calculate closest points that will form the interpolation
         # interval t_low < time < t_high.
@@ -325,13 +359,13 @@ class control:
             t_low = max( self.times[ self.times - time < 0 ] )
         except ValueError:
             # We must be at the lower time limit 
-            t_low = self.timemin
+            t_low = self.timemin()
             
         try:
             t_high = min( self.times[ self.times - time > 0 ] )
         except ValueError:
             # We must be at the higher time limit
-            t_high = self.timemax
+            t_high = self.timemax()
         
         index_low = self.times.tolist().index( t_low )
         index_high = self.times.tolist().index( t_high )
@@ -404,22 +438,32 @@ class control:
             raise ImportError('\'control.py\' requires matplotlib for' + \
                               ' plotting functionality.')
         
+        # Create figure handles, and a subplot for axis scaling
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        
         # Plot control functions
         for index in range( self.number_controls ):
-            plt.plot( self.times, self.control[:,index] )
+            label = '$u_{%i}$' %(index)
+            ax.plot( self.times, self.control[:,index], label=label )
         
         # Ensure that the axes are resonably scaled
         c_max = self.control.max()
         c_min = self.control.min()
         scale = c_max - c_min
         ds = 0.1 * scale
-        plt.axis([self.timemin, self.timemax, c_min-ds, c_max+ds])
+        plt.axis([ self.timemin(), self.timemax(), c_min-ds, c_max+ds])
             
         # Labels and annotations
-        plt.xlim( (self.timemin, self.timemax) )
+        plt.xlim( (self.timemin(), self.timemax()) )
         plt.xlabel(r'$t$')
         plt.ylabel(r'$u_\mu(t)$')
         plt.title('Control functions')
+        
+        # Shrink size of axis by 7%.  Add a legend.
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0, box.width*0.93, box.height])
+        ax.legend(bbox_to_anchor=(1., 0.5), loc='center left')
         plt.show()
         
         # Cleanup
