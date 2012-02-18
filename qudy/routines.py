@@ -130,7 +130,7 @@ def fidelity(A, B):
     f = 1j* log(q)
     f = f - min(f)
     fidlty = min( abs( cos( f/2.0 ) ) )
-    return real(fidlty)
+    return float( real(fidlty) )
 
 
 def infidelity(A, B):
@@ -355,7 +355,7 @@ def structure_constants( hamiltonians ):
 
 def euler_decomposition( U ):
     """
-    Decompose a unitary in :math:`SU(2)` into a set of three Euler
+    Decompose a unitary in :math:`U(2)` into a set of three Euler
     angles.  We use the XYX Euler angle convention.  I think it only
     works for out of plane rotations (all I care about actually).
     
@@ -376,8 +376,24 @@ def euler_decomposition( U ):
          
     .. todo::
        
-       Check stability of algorithm for rotations in the plane.
+       Check stability of algorithm for rotations in the plane.  Check
+       that elements U(2) are mapped correctly to equivalent elements
+       in SU(2).
     """
+    
+    # Check to see if U is in SU(2).  If it is not, but still
+    # two-dimensional, adjust the global phase so that det(U) = 1.
+    # Otherwise throw an error.
+    
+    if not U.shape == (2,2):
+        raise ValueError("Matrix must be two dimensional")
+    
+    if not det(U) == 1:
+        
+        # Adjust global phase so that determinant is 1.
+        phase = 1j/2.0 * log( det(U) )
+        U = exp( 1j * phase ) * U
+    
     
     H = product_operator( 1 )
 

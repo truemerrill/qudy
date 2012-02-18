@@ -23,14 +23,14 @@
 # Import required libraries.  Make simple 'shortcut' copies of routines
 # used in linear algebra.  This makes each of these routines superficially
 # part of the QUANTOP python module.
-from numpy import Inf, NaN, isinf, isnan, isreal, isscalar, log, log10, \
+from numpy import Inf, NaN, isinf, isnan, isreal, isscalar, \
      ones, eye, pi, sin, cos, tan, arcsin, arccos, arctan, exp, zeros, \
      trace, matrix, array, real, imag, conj, arange, floor, ceil, mean, \
      resize, diag, set_printoptions, hstack, vstack, copy, flipud
 from numpy.linalg import eig, det
 from scipy.linalg import kron, logm, norm, inv, sqrtm, eigh
 from scipy.linalg import expm2 as expm
-from scipy import sqrt
+from scipy import sqrt, log, log10
 from warnings import warn
 
 # Set print options to make print formatting pretty.  The numerical

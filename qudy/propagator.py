@@ -347,9 +347,9 @@ def rotation( *args, **keyword_args ):
     
      **Forms:**
     
-       * `rotation( axis )`
-       * `rotation( theta, phi )`
-       * `rotation( theta, axis )`
+       * ``rotation( axis )``
+       * ``rotation( theta, phi )``
+       * ``rotation( theta, axis )``
        
     **Args:**
       
@@ -419,6 +419,11 @@ def rotation( *args, **keyword_args ):
     # Construct the control function and the propagator.  We assume
     # square pulse propagators (i.e. constant controls over the
     # interval).
+    
+    # Check for negative rotation angles.
+    if theta < 0:
+        vec = - vec
+        theta = - theta
     
     ctrl = array([[vec[0], vec[1], vec[2], 0    ],
                   [vec[0], vec[1], vec[2], theta]])

@@ -1,0 +1,12 @@
+========
+TODO
+========
+
+* Fix euler_decomposition.  Currently it appears as if the inverse
+  trigonometric functions sometimes pick the wrong signs for the Euler
+  angles.  See if there is a more stable algorithm.
+
+* Fix inverse propagators.  The inverse propagator is mostly correct,
+  however I know the time intervals are shifted out of place.
+	
+* Lindblad master equations are still not implemented.
