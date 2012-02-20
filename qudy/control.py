@@ -109,7 +109,10 @@ class control:
 
             ARR = copy( self.times )
             for index in range( len(args) - 1 ):
-                arg = args[index]
+                
+                # Loop over arguments from last to first.  Easist to
+                # keep time vector in the correct position on ARR.
+                arg = args[-(index + 2)]
                 
                 # Is arg a function? Map to a discrete array.
                 if hasattr( arg, '__call__' ):
@@ -406,11 +409,17 @@ class control:
         
            .. code-block:: python
               
-              u1 = lambda x: sin(x)
-              u2 = lambda x: cos(x)
-              t = arange( 0, 2*pi, pi/50.0 )
-              c = control( u1, u2, t )           
-              c.plot()
+              ux = lambda t: cos( pi * t )
+              uy = lambda t: sin( pi * t )
+              uz = lambda t: 0
+              dt = 1.0 / 150.0
+              t = arange( 0, 1 + dt, dt )
+              
+              # Create the control instance
+              ctrl = control( ux, uy, uz, t )
+
+              # Make a plot
+              ctrl.plot()
               
            .. _(1):
 
