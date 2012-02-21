@@ -8,3 +8,8 @@ routines.
 
 **v0.0, 2012 February 9** 
 Propagators, error models, and imperfect propagators are now working.
+
+**v0.1, 2012 Febrary 21** 
+Started branch to version 0.1.  Several routines related to dynamical
+Lie algebras are working well.  Several example scripts are now
+included.
