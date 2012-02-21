@@ -115,12 +115,12 @@ class error:
         self.error_parameters = error_parameters
         
         
-    def __call__( self, ctrl, error_parameters = None ):
+    def __call__( self, ctrl ):
         """
         Implements functional behavior.  Inputs a control instance and
         returns a distorted control function.
         """
-        return self.model.call( ctrl, error_parameters )
+        return self.model.call( ctrl, self.error_parameters )
     
     
     def __repr__( self ):

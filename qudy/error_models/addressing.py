@@ -9,8 +9,8 @@ def call( ctrl, error_parameters, **keyword_args ):
       new_control
     """
     # Enforce defaults
-    if error_parameters == None:
-        error_parameters = default_parameters()
+    #if error_parameters == None:
+    #    error_parameters = default_parameters()
       
     # Perhaps the user was lasy any input the error parameters as a
     # single element rather than a subscriptable list.  Fix.

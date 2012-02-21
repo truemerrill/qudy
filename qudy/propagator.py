@@ -352,22 +352,23 @@ def rotation( *args, **keyword_args ):
        * ``rotation( theta, axis )``
        
     **Args:**
-      
+    
        * *axis* : A three-element list, tuple or array representing
-       components of a Bloch vector.  If axis is the sole input,
-       then the rotation angle is interpreted to be the length of
-       the axis vector.
+         components of a Bloch vector.  If axis is the sole input,
+         then the rotation angle is interpreted to be the length of
+         the axis vector.
        * *theta* : A rotation angle.
        * *phi* : A field phase.  The interaction frame Hamiltonian for
-       this phase is proportional to:math:`H = \cos \phi X + \sin \phi Y`.
-
-   **Optional keywords:**
-          
-     * See the propagator class for keywords.
-     
-   **Returns:**
+         this phase is proportional to :math:`H = \\cos \\phi X + 
+         \\sin \\phi Y`.
+       
+    **Optional keywords:**
     
-       * :math:`U = R(\theta,\phi)`,
+    See the propagator class for keywords.
+     
+    **Returns:**
+    
+       * :math:`U = R(\\theta,\\phi)`,
     """
     
     # Check input arguments

@@ -32,12 +32,12 @@ class imperfect( propagator ):
     A class for imperfect quantum dynamical propagators.  Similar to
     the propagator class, however now we associate an error model that
     distorts the input control functions.
-
+    
     **Forms:**
-
-       * `imperfect(ctrl, err)`
-       * `imperfect(ctrl, 'error model')
-       * `imperfect(ctrl, hamiltonians, err)`
+    
+       * ``imperfect(ctrl, err)``
+       * ``imperfect(ctrl, 'error model')``
+       * ``imperfect(ctrl, hamiltonians, err)``
 
     **Args:**
       
@@ -85,7 +85,7 @@ class imperfect( propagator ):
         command line.
         """
         string = str( self.dimension ) + '-D imperfect propagator on t = ( ' + \
-            str( self.timemin ) + ' , ' + str( self.timemax ) + ' )' 
+            str( self.timemin() ) + ' , ' + str( self.timemax() ) + ' )' 
         return string
     
     
@@ -93,7 +93,7 @@ class imperfect( propagator ):
         """
         Function to multiply two imperfect objects.  For propagators
         for the same bilinear control system, i.e. their
-        `self.hamiltonians` entries match, multiplication involves
+        ``self.hamiltonians`` entries match, multiplication involves
         appending the control functions to make a larger control.
         """
         
@@ -151,10 +151,10 @@ class imperfect( propagator ):
         
         **Forms:**
         
-           * `update_error()`
-           * `update_error( err )`
-           * `update_error( model )`
-           * `update_error( model, error_parameters )`
+           * ``update_error()``
+           * ``update_error( err )``
+           * ``update_error( model )``
+           * ``update_error( model, error_parameters )``
            
         **Args:**
         
@@ -198,19 +198,20 @@ def imperfect_rotation( *args, **keyword_args ):
     
     **Forms:**
     
-       * `imperfect_rotation( axis, err )`
-       * `imperfect_rotation( theta, phi, err )`
-       * `imperfect_rotation( theta, axis, err )`
+       * ``imperfect_rotation( axis, err )``
+       * ``imperfect_rotation( theta, phi, err )``
+       * ``imperfect_rotation( theta, axis, err )``
        
     **Args:**
       
        * *axis* : A three-element list, tuple or array representing
-       components of a Bloch vector.  If axis is the sole input,
-       then the rotation angle is interpreted to be the length of
-       the axis vector.
+         components of a Bloch vector.  If axis is the sole input,
+         then the rotation angle is interpreted to be the length of
+         the axis vector.
        * *theta* : A rotation angle.
        * *phi* : A field phase.  The interaction frame Hamiltonian for
-       this phase is proportional to:math:`H = \cos \phi X + \sin \phi Y`.
+         this phase is proportional to:math:`H = \\cos \\phi X + 
+         \\sin \\phi Y`.
 
     **Optional keywords:**
           
@@ -218,7 +219,7 @@ def imperfect_rotation( *args, **keyword_args ):
      
     **Returns:**
     
-       * :math:`V = M(\theta,\phi)`,
+       * :math:`V = M(\\theta,\\phi)`,
     """
 
     # Pull out last argument.  It should be an instance of the
