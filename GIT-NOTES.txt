@@ -25,6 +25,7 @@ Notes about the GIT version control system
 * Update your working copy to the most recent version (merge with the
   MASTER branch).  In git, updating is performed with the pull command.
 	
+	``git pull origin master``
 	``git pull git://merrill.homenet.org/qudy.git master``
 	
 * Push your changes to the main server.  This requires SSH access to

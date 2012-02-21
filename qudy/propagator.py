@@ -45,10 +45,10 @@ class propagator:
     
     **Forms:**
     
-       * `propagator(ctrl)`
-       * `propagator(ctrl, hamiltonians)`
-       * `propagator(ctrl, hamiltonians, solution = 'method')`
-       * `propagator(ctrl, hamiltonians, solution = 'method', order = n)`
+       * ``propagator(ctrl)``
+       * ``propagator(ctrl, hamiltonians)``
+       * ``propagator(ctrl, hamiltonians, solution = 'method')``
+       * ``propagator(ctrl, hamiltonians, solution = 'method', order = n)``
     
     **Args:**
       
@@ -92,8 +92,8 @@ class propagator:
         # If there is one argument, then the user only gave a control
         # function.  Assume a qubit system, i.e. SU(2^n).
         if len(args) == 1:
-            self.control = args[0]
-            dim = self.control.number_controls
+            self.ideal_control = args[0]
+            dim = self.ideal_control.number_controls
                 
             # Convert Lie dimensonality into number of qubits.
             n = log( dim + 1 ) / log( 4 )
@@ -104,13 +104,13 @@ class propagator:
         # If there are two arguments, then the user gave both a set of
         # controls and also a set of Hamiltonians.
         elif len(args) == 2:
-            self.control = args[0]
+            self.ideal_control = args[0]
             self.hamiltonians = args[1]
             
         # If there are three arguments, then the user gave controls,
         # Hamiltonians and Lindblad operators.
         elif len(args) == 3:
-            self.control = args[0]
+            self.ideal_control = args[0]
             self.hamiltonians = args[1]
             self.lindblad = args[2]
             
@@ -118,20 +118,20 @@ class propagator:
             # Master equation methods.  Calculate superoperator
             # representations of relevant operators.
             
-        if not len( self.control ) == len( self.hamiltonians ):
+        if not len( self.ideal_control ) == len( self.hamiltonians ):
             raise ValueError("Control dimension mismatch.  Controls and " + \
                              "Hamiltonians must be of the same length.")
             
         # Carry over several constants from controls
-        self.dimension  =  self.control.dimension
-        self.times      =  self.control.times
-        self.timemin    =  self.control.timemin
-        self.timemax    =  self.control.timemax
+        self.dimension  =  self.ideal_control.dimension
+        self.times      =  self.ideal_control.times
+        self.timemin    =  self.ideal_control.timemin
+        self.timemax    =  self.ideal_control.timemax
         
-        # Create an ideal_control.  For propagator instances, these
-        # are identical to control, however for imperfect instances
+        # Create an control.  For propagator instances, these are
+        # identical to ideal_control, however for imperfect instances
         # these differ.
-        self.ideal_control = self.control
+        self.control = self.ideal_control.copy()
         
         # Parse through keyword arguments.  Sets default solution
         # method.  Other keywords that are not understood will be

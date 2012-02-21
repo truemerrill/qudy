@@ -99,8 +99,10 @@ class imperfect( propagator ):
         
         # Use propagator __mul__ method, but make the output an
         # imperfect instance and make the error match self.
+        U1 = propagator( self.ideal_control )
+        U2 = propagator( target.ideal_control )
+        U = propagator.__mul__(U1,U2)
         
-        U = propagator.__mul__(self, target)
         V = imperfect( U.ideal_control , self.hamiltonians, self.error )
         return V
     

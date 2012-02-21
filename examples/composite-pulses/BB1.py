@@ -30,7 +30,7 @@ BB1 = M(pi, phi, err) * M(2*pi, 3*phi, err) * \
       M(pi, phi, err) * M(theta, 0, err )
 
 # Plot the controls
-BB1.control.plot()
+# BB1.control.plot()
 
 # Matrix representation for the ideal gate
 U_matrix = U.solve()
@@ -60,10 +60,9 @@ for index in range( len(epsilon) ):
    
 
 # Create a scaling plot from infidelity data
-
-plt.figure()    
 plt.loglog( epsilon, raw_data, \
             epsilon, BB1_data )
 plt.xlabel( r'$\epsilon$' )
 plt.ylabel( r'Infidelity' )
+plt.show()
     
