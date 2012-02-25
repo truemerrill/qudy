@@ -70,8 +70,7 @@ setup (
     author = 'True Merrill and collaborators',
     author_email = 'true.merrill@gatech.edu',
     url = 'http://ww2.chemistry.gatech.edu/~brown/',
-    packages = ['qudy','qudy/error_models','qudy/hardware_models', \
-                'qudy/optimal_control'],
+    packages = ['qudy','qudy/error_models'],
     license = 'LICENSE.txt',
     description = 'A qubit dynamics simulator',
     long_description = open('README.txt').read(),
