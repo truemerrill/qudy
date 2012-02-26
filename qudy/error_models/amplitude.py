@@ -30,7 +30,7 @@ def call( ctrl, error_parameters, **keyword_args ):
     if error_parameters == None:
         error_parameters = default_parameters()
       
-    # Perhaps the user was lasy any input the error parameters as a
+    # Perhaps the user was lasy and input the error parameters as a
     # single element rather than a subscriptable list.  Fix.
     try:
         epsilon = error_parameters[0]
