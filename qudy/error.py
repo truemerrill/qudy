@@ -108,7 +108,11 @@ class error:
             error_parameters = args[1]
             
             if not isinstance(error_parameters, list):
-                error_parameters = list(error_parameters)
+
+                try:
+                    error_parameters = list(error_parameters)
+                except TypeError:
+                    error_parameters = [ float(error_parameters) ]
             
         # Save the error parameters
         self.default_parameters = self.model.default_parameters()
