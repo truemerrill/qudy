@@ -193,6 +193,17 @@ class imperfect( propagator ):
             self.control = distorted
 
 
+    def interaction_frame( self ):
+        """
+        Transform into interaction frame moving with the
+        ideal_control.  The transformation into the interaction
+        picture is an operation on the basis Hamiltonians, which then
+        can be mapped onto an image of the control functions
+        themselves.
+        """
+        return NotImplemented
+
+
 def imperfect_rotation( *args, **keyword_args ):
     """
     A function to form propagators that represent rotations in SU(2).

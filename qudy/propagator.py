@@ -402,7 +402,11 @@ def rotation( *args, **keyword_args ):
             if arg.__len__() == 3:
                 # Normalize the axis
                 norm = sqrt( arg[0]**2 + arg[1]**2 + arg[2]**2 )
-                vec  = array([ arg[0], arg[1], arg[2] ]) / (theta*norm)
+
+                if norm == 0:
+                    raise ValueError("Axis must not be a null vector.")
+
+                vec  = array([ arg[0], arg[1], arg[2] ]) / (norm)
                 
             else:
                 raise SyntaxError("Axis must be a 3-vector.")
