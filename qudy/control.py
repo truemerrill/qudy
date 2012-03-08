@@ -276,6 +276,31 @@ class control:
         c.verbose =  bool( copy( self.verbose ) )
         
         return c
+
+
+    def arc_length(self):
+        """
+        Measures arc length of self on the Lie algebra.  Assume
+        orthogonal coordinates.
+
+        .. todo:
+        
+           Consider a generalization which allows for a non-orthogonal
+           assumption.
+        """
+
+        length = 0
+        for timestep in range( len(self.times) - 1 ):
+
+            # Calculate pulse duration
+            dt = self.times[ timestep + 1 ] - self.times[ timestep ]
+            dt = float(dt)
+
+            # Calculate interval Lie "length"
+            dL = norm( self.control[ timestep, : ] ) * dt
+            length = length + dL
+
+        return length
     
     
     def inverse(self):
