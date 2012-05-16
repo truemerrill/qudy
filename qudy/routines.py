@@ -22,7 +22,7 @@
 
 from quantop import *
 
-__all__ = ['inner_product','projection','norm','trace_distance', \
+__all__ = ['inner_product','projection','norm','decomp','trace_distance', \
            'fidelity','infidelity','gram_schmidt','commutator',    \
            'product_operator','generate_algebra',   \
            'structure_constants','euler_decomposition']
@@ -82,6 +82,45 @@ def norm(A):
     nrm = sqrt( inner_product(A,A) )
     return nrm
 
+
+def decomp(A):
+    """
+    Decomposes a matrix U in SU(2) into coefficents (ax,ay,az) such
+    that U = exp( -i/2 * (ax * X + ay * Y + az * Z) ).  This function
+    does not use matrix logrithms.
+
+    **Forms:**
+
+       * ``decomp(A)``
+
+    **Args:**
+
+       * *A* : a 2 x 2 dimensional special unitary matrix
+
+    **Returns:**
+    
+       * [ax,ay,az] : a list of coefficients
+    """
+    I = operator("1,0;0,1")
+    
+    # Check whether input is unitary
+    if not (A*A.H) == I:
+        raise ValueError("Input matrix is not unitary.")
+
+    # Check whither input is in SU(2)
+    if not real( det(A) ) == 1:
+        raise ValueError("Input matrix is not special unitary.")
+
+    alpha = 2*arccos( real( A[0,0] ) )
+    beta  = - sin( alpha / 2.0 )
+
+    # Find components
+    ax = alpha/beta * imag( A[0,1] )
+    ay = alpha/beta * real( A[0,1] )
+    az = alpha/beta * imag( A[0,0] )
+
+    return [ax,ay,az]
+    
 
 def trace_distance(A, B):
     """
@@ -328,14 +367,13 @@ def generate_algebra( hamiltonians, max_depth = 10 ):
         
         if len(brackets) == dimension:
             
-            print "Converged at depth k = %i." %(depth)
-            print "Algebra dimension d = %i." %(dimension)
-            
+            # print "Converged at depth k = %i." %(depth)
+            # print "Algebra dimension d = %i." %(dimension)
             return brackets
         
     # Must not have converged
-    print "Failed to converge at depth k = %i." %(depth)
-    print "Algebra dimension d > %i." %( len(brackets) )
+    raise ValueError("Failed to converge at depth k = %i.\n" %(depth) + \
+                     "Algebra dimension d > %i." %( len(brackets) ))
     
     return brackets
 

@@ -20,8 +20,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from quantop import *
-#from numpy import savetxt, genfromtxt, load, save, savez, all, diff, \
 from numpy import all, diff, interp
+import plot as qudyplot
 
 __all__ = ['control','load','save']
 
@@ -298,6 +298,7 @@ class control:
 
             # Calculate interval Lie "length"
             dL = norm( self.control[ timestep, : ] ) * dt
+            print dL
             length = length + dL
 
         return length
@@ -464,44 +465,45 @@ class control:
            
            * ``ImportError`` : requires matplotlib for plotting functionality.
         """
-        # Attempt to plot the controls.  If matplotlib does not exist
-        # on the system, alert the user.
-        try:
-            import matplotlib.pyplot as plt
-        except ImportError:
-            raise ImportError('\'control.py\' requires matplotlib for' + \
-                              ' plotting functionality.')
+        ## # Attempt to plot the controls.  If matplotlib does not exist
+        ## # on the system, alert the user.
+        ## try:
+        ##     import matplotlib.pyplot as plt
+        ## except ImportError:
+        ##     raise ImportError('\'control.py\' requires matplotlib for' + \
+        ##                       ' plotting functionality.')
         
-        # Create figure handles, and a subplot for axis scaling
-        fig = plt.figure()
-        ax = plt.subplot(111)
+        ## # Create figure handles, and a subplot for axis scaling
+        ## fig = plt.figure()
+        ## ax = plt.subplot(111)
         
-        # Plot control functions
-        for index in range( self.number_controls ):
-            label = '$u_{%i}$' %(index)
-            ax.plot( self.times, self.control[:,index], label=label )
+        ## # Plot control functions
+        ## for index in range( self.number_controls ):
+        ##     label = '$u_{%i}$' %(index)
+        ##     ax.plot( self.times, self.control[:,index], label=label )
         
-        # Ensure that the axes are resonably scaled
-        c_max = self.control.max()
-        c_min = self.control.min()
-        scale = c_max - c_min
-        ds = 0.1 * scale
-        plt.axis([ self.timemin(), self.timemax(), c_min-ds, c_max+ds])
+        ## # Ensure that the axes are resonably scaled
+        ## c_max = self.control.max()
+        ## c_min = self.control.min()
+        ## scale = c_max - c_min
+        ## ds = 0.1 * scale
+        ## plt.axis([ self.timemin(), self.timemax(), c_min-ds, c_max+ds])
             
-        # Labels and annotations
-        plt.xlim( (self.timemin(), self.timemax()) )
-        plt.xlabel(r'$t$')
-        plt.ylabel(r'$u_\mu(t)$')
-        plt.title('Control functions')
+        ## # Labels and annotations
+        ## plt.xlim( (self.timemin(), self.timemax()) )
+        ## plt.xlabel(r'$t$')
+        ## plt.ylabel(r'$u_\mu(t)$')
+        ## plt.title('Control functions')
         
-        # Shrink size of axis by 7%.  Add a legend.
-        box = ax.get_position()
-        ax.set_position([box.x0, box.y0, box.width*0.93, box.height])
-        ax.legend(bbox_to_anchor=(1., 0.5), loc='center left')
-        plt.show()
+        ## # Shrink size of axis by 7%.  Add a legend.
+        ## box = ax.get_position()
+        ## ax.set_position([box.x0, box.y0, box.width*0.93, box.height])
+        ## ax.legend(bbox_to_anchor=(1., 0.5), loc='center left')
+        ## plt.show()
         
-        # Cleanup
-        del plt
+        ## # Cleanup
+        ## del plt
+        return qudyplot.controls( self )
         
     
     def save( self, filename, format = 'csv' ):

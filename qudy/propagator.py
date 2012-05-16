@@ -340,6 +340,39 @@ class propagator:
         return U
 
 
+    def components(self, *args):
+        """
+        Calculates components of generator on the Lie algebra.
+        """
+
+        # Skew-symmetrize current Hamiltonians
+        H = []
+        for index in range(len( self.hamiltonians )):
+            H.append( -1j * self.hamiltonians[index] )
+
+        # Generate an orthanormal set of skew-symmetrized Hamiltonians
+        # that span the Lie algebra.
+        A = routines.generate_algebra( self.hamiltonians )
+
+        # Decompose log(U) into A basis
+        U = self.solve()
+        logU = operator( logm(U) )
+        
+        a = zeros( len(A) )
+        for v in range( len(A) ):
+            a[v] = routines.inner_product( logU, A[v] )
+
+        # Calculate covectors in original oblique basis
+        print a
+        u = zeros( len(H) )
+        for mu in range(len(H)):
+            
+            for v in range( len(A) ):
+                u[v] = u[v] + a[v] / routines.inner_product(A[v],H[mu])
+
+        return u[v]
+    
+
 def rotation( *args, **keyword_args ):
     """
     A function to form propagators that represent rotations in SU(2).

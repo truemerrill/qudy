@@ -10,4 +10,5 @@ from integration import *
 from propagator import *
 from routines import *
 
+import plot
 import quantop

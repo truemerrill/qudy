@@ -148,7 +148,10 @@ def trotter( ctrl, hamiltonians ):
             H = H + c[index] * hamiltonians[index]
             
         # Compute propagator for this interval
+        #try:
         Ut = operator( expm( -1j * H * dt ) )
+        #except ValueError:
+        #    print "Exponentiation failed, \ndt:%.4e\nH:%s" %(dt,H.__repr__())
         
         # Append evolution
         U = operator( Ut * U )
