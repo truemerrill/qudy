@@ -138,6 +138,11 @@ def scaling( sequence, target, **keyword_args ):
         show = keyword_args['show']
     else:
         show = True
+    
+    if keyword_args.has_key('calculation'):
+        calculation = keyword_args['calculation']
+    else:
+        calculation = 'infidelity'
         
     
     # Create a set of error amplitudes to measure scaling
@@ -156,21 +161,35 @@ def scaling( sequence, target, **keyword_args ):
         Ut = target
 
     # Measure infidelities
-    infidelities = []
+    y = []
     for index in range( len(epsilon) ):
         
         e = epsilon[index]
         err.error_parameters = [ e ]
         sequence.update_error(err)
-        infidelities.append( \
-            ro.infidelity(sequence.solve() , target.solve()) )
+
+        if calculation == 'infidelity':
+            y.append( ro.infidelity(sequence.solve() , Ut) )
+
+        elif calculation == 'population':
+            p0 = qu.operator("0,0;0,1")
+            p1 = qu.operator("1,0;0,0")
+            U = sequence.solve()
+            y.append( qu.trace( U*p0*U.H*p1 ) )
     
     if show:
         
         # Create plot
-        plt.loglog( qu.real(epsilon) , qu.real( infidelities ) )
+        plt.loglog( qu.real(epsilon) , qu.real( y ) )
         plt.xlabel(r'Systematic Error')
-        plt.ylabel(r'Infidelity')
+
+        if calculation == 'infidelity':
+            plt.ylabel(r'Infidelity')
+            
+        elif calculation == 'population':
+            plt.ylabel(r'Population')
+            
+        plt.xlim([min_epsilon, max_epsilon]) 
         plt.show()
         
     else:

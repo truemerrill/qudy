@@ -104,10 +104,10 @@ def decomp(A):
     I = operator("1,0;0,1")
     
     # Check whether input is unitary
-    if not (A*A.H) == I:
-        raise ValueError("Input matrix is not unitary.")
+    #if not (A*A.H) == I:
+    #    raise ValueError("Input matrix is not unitary.")
 
-    # Check whither input is in SU(2)
+    # Check whether input is in SU(2)
     if not real( det(A) ) == 1:
         raise ValueError("Input matrix is not special unitary.")
 
