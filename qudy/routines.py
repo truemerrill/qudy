@@ -21,6 +21,7 @@
 
 
 from quantop import *
+from numpy import all
 
 __all__ = ['inner_product','projection','norm','decomp','trace_distance', \
            'fidelity','infidelity','gram_schmidt','commutator',    \
@@ -104,12 +105,15 @@ def decomp(A):
     I = operator("1,0;0,1")
     
     # Check whether input is unitary
-    #if not (A*A.H) == I:
+    #if not all(A*A.H) == I:
     #    raise ValueError("Input matrix is not unitary.")
 
     # Check whether input is in SU(2)
     if not real( det(A) ) == 1:
-        raise ValueError("Input matrix is not special unitary.")
+        
+        # Adjust global phase so that determinant is 1.
+        phase = 1j/2.0 * log( det(A) )
+        A = exp( 1j * phase ) * A
 
     alpha = 2*arccos( real( A[0,0] ) )
     beta  = - sin( alpha / 2.0 )

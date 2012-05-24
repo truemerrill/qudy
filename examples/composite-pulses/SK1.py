@@ -9,13 +9,14 @@
 
 from qudy import *
 from qudy.quantop import *
-
+import qudy.plot as plt
+"""
 try:
     import matplotlib.pyplot as plt
 
 except ImportError:
     print "Requires matplotlib for plotting."
-
+"""
 
 # Create a systematic error
 err = error('amplitude')
@@ -31,6 +32,11 @@ SK1 = M(2*pi, -phi, err) * M(2*pi, phi, err) * M(theta, 0, err )
 # Plot the controls
 SK1.control.plot()
 
+# Create a scaling plot
+plt.scaling( V, U )
+plt.scaling( SK1, U )
+
+"""
 # Matrix representation for the ideal gate
 U_matrix = U.solve()
 
@@ -65,4 +71,4 @@ plt.loglog( epsilon, raw_data, \
             epsilon, SK1_data )
 plt.xlabel( r'$\epsilon$' )
 plt.ylabel( r'Infidelity' )
-    
+"""
