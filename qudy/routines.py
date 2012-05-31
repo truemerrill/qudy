@@ -53,7 +53,7 @@ def inner_product(A, B):
     return ip
 
 
-def projection( U,V ):
+def projection( U, V ):
     """
     Project an object V onto a basis vector U.
     """
@@ -102,11 +102,6 @@ def decomp(A):
     
        * [ax,ay,az] : a list of coefficients
     """
-    I = operator("1,0;0,1")
-    
-    # Check whether input is unitary
-    #if not all(A*A.H) == I:
-    #    raise ValueError("Input matrix is not unitary.")
 
     # Check whether input is in SU(2)
     if not real( det(A) ) == 1:
@@ -304,13 +299,13 @@ def product_operator( number_qubits ):
     # Wrapper function for Pauli operators
     def s(x):
         if x == 0:
-            return operator("1,0;0,1")
+            return operator([[1,0],[0,1]])
         elif x == 1:
-            return operator("0,1;1,0")
+            return operator([[0,1],[1,0]])
         elif x == 2:
-            return operator("0,-1j;1j,0")
+            return operator([[0,-1j],[1j,0]])
         elif x == 3:
-            return operator("1,0;0,-1")
+            return operator([[1,0],[0,-1]])
         else:
             raise Exception("Could not understand input.")
     

@@ -298,7 +298,6 @@ class control:
 
             # Calculate interval Lie "length"
             dL = norm( self.control[ timestep, : ] ) * dt
-            print dL
             length = length + dL
 
         return length

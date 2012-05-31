@@ -28,6 +28,7 @@ import imperfect
 
 __all__ = ['propagator','rotation','R']
 
+[Hx,Hy,Hz] = routines.product_operator(1)
 
 class propagator:
     """
@@ -97,9 +98,12 @@ class propagator:
                 
             # Convert Lie dimensonality into number of qubits.
             n = log( dim + 1 ) / log( 4 )
-            self.hamiltonians = routines.product_operator( n )
             self.number_qubits = n
             self.lie_algebra = "su(%i)" %(int(2**n))
+            if n == 1:
+                self.hamiltonians = [Hx,Hy,Hz]
+            else:
+                self.hamiltonians = routines.product_operator( n )
             
         # If there are two arguments, then the user gave both a set of
         # controls and also a set of Hamiltonians.
@@ -467,7 +471,7 @@ def rotation( *args, **keyword_args ):
                   [vec[0], vec[1], vec[2], theta]])
     
     u = control.control(ctrl)
-    return  propagator( u, **keyword_args )
+    return  propagator( u, [Hx,Hy,Hz], **keyword_args )
 
 
 def R( *args, **keyword_args ):
